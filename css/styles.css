@@ -260,14 +260,14 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 #reviews-list li {
   background-color: #fff;
-    border: 2px solid #f3f3f3;
+  border: 2px solid #f3f3f3;
   display: block;
   list-style-type: none;
   margin: 0 0 30px;
   overflow: hidden;
-  padding: 0 20px 20px;
   position: relative;
-  width: 85%;
+  -webkit-border-radius: 1rem 0 1rem 0;
+  border-radius: 1rem 0 1rem 0;
 }
 #reviews-list li p {
   margin: 0 0 10px;
@@ -275,3 +275,19 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #restaurant-hours td {
   color: #666;
 }
+
+.review-details {
+  padding: 0 10px;
+}
+
+.review-title {
+  display: flex;
+  justify-content: space-between;
+  background-color: #333333;
+  padding-top: 10px; 
+}
+
+.review-title p {
+  color: white;
+}
+
