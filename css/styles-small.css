@@ -1,6 +1,6 @@
 /* ====================== Media Query Min Width 450px====================== */
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 800px) {
   /* CSS Document */
   /* ====================== Navigation ====================== */
   header .title {
@@ -23,10 +23,6 @@
   }
   #restaurant-container,
   #reviews-container {
-    width: unset;
-  }
-
-  .inside #footer {
-    width: unset;
+    width: unset;s
   }
 }

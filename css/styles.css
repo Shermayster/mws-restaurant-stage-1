@@ -35,6 +35,10 @@ h1, h2, h3, h4, h5, h6 {
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
+.uppercase {
+  text-transform: uppercase;
+}
 #maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
@@ -44,7 +48,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   color: #aaa;
   font-size: .8rem;
   letter-spacing: 1px;
-  padding: 25px;
+  padding: 25px 0;
   text-align: center;
   text-transform: uppercase;
 }
@@ -207,7 +211,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 .inside #footer {
   bottom: 0;
   position: absolute;
-  width: 50%;
+  padding: 2rem;
 }
 #restaurant-name {
   color: #f18200;
@@ -272,6 +276,17 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #reviews-list li p {
   margin: 0 0 10px;
 }
+
+#reviews-list li p.review-raiting {
+  color: #fff;
+  display: inline-flex;
+  padding: .1rem .5rem;
+  background-color: #F3A83B;
+  letter-spacing: .2rem;
+  font-size: .8rem;
+  border-radius: 3px;
+}
+
 #restaurant-hours td {
   color: #666;
 }
@@ -284,10 +299,19 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   display: flex;
   justify-content: space-between;
   background-color: #333333;
-  padding-top: 10px; 
+  padding-top: 10px;
 }
 
 .review-title p {
   color: white;
 }
 
+.review-title .review-date {
+  color: #C7C7C7;
+  font-size: .8rem;
+  text-shadow: 0 0 1px #525252;
+}
+
+#reviews-list li .review-content {
+  margin-top: 10px;
+}

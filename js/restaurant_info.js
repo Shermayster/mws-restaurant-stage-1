@@ -137,6 +137,7 @@ createReviewHTML = (review) => {
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
+  rating.className = 'review-raiting uppercase';
   reviewContent.appendChild(rating);
 
   const comments = document.createElement('p');
