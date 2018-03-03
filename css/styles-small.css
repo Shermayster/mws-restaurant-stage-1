@@ -2,27 +2,20 @@
 
 @media screen and (max-width: 800px) {
   /* CSS Document */
-  /* ====================== Navigation ====================== */
-  header .title {
-    height: 15vh;
-    display: flex;
-  }
-  #breadcrumb {
+  /* ====================== Navigation ===================================== */
+
+  /* #breadcrumb {
     padding-left: 1rem;
     width: 100%;
   }
   #breadcrumb li {
     font-size: 1.2rem;
-  }
+  } */
   /* ====================== Restaurant Details ====================== */
   .inside #map-container {
-    width: 100%;
-    height: 50vh;
-    display: block;
-    position: relative;
-  }
-  #restaurant-container,
-  #reviews-container {
-    width: unset;s
+    /*width: 100%;*/
+    /*height: 50vh;*/
+    /*display: block;*/
+    /*position: relative;*/
   }
 }
