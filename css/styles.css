@@ -55,16 +55,17 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #footer {
     background-color: #444;
     color: #aaa;
-    font-size: .8rem;
+    font-size: 0.8rem;
     letter-spacing: 1px;
     padding: 25px 0;
     text-align: center;
     text-transform: uppercase;
+    width: 100vw;
 }
 
 /* ====================== Header ========================== */
 .title {
-    height: 15vh;
+    height: 5rem;
     background-color: #252831;
     text-align: center;
     display: flex;
@@ -227,7 +228,8 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 .inside #footer {
     bottom: 0;
     position: absolute;
-    padding: 2rem;
+    padding: 2rem 2vw;
+    width: 96vw;
 }
 
 #restaurant-name {
