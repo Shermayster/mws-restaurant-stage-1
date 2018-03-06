@@ -320,6 +320,7 @@ restaurant-address
 #restaurant-hours {
     background-color: #fff;
     padding: 1rem;
+    width: 100vw;
 }
 
 #restaurant-hours td {

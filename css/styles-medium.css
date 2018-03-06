@@ -1,13 +1,17 @@
-/* ====================== Media Query Min Width 600px====================== */
+/* ====================== Media Query Min Width 700px====================== */
 
-@media screen and (min-width: 700px) {
+@media screen and (min-width: 900px) {
   /* CSS Document */
   #reviews-list {
     flex-direction: row;
     flex-wrap: wrap;
   }
+  #restaurant-info {
+    display: flex;
+    flex-direction: column;
+  }
   #reviews-list li {
-    max-width: 280px;
+    max-width: 350px;
     margin: 1rem;
   }
 }
