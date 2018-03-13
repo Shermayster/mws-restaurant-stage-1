@@ -3,7 +3,7 @@
 @media screen and (min-width: 700px) {
   /* CSS Document */
 
-  #maincontent {
+  #restaurant-content {
     grid-gap: 0;
     grid-template-columns: 50% 50% 100%;  
     max-width: 1200px;
@@ -15,14 +15,14 @@
     justify-content: center;
   }
 
-  #map-container {
+  #restaurant-content #map-container {
     grid-column: 2;
     grid-row: 1;
   }
-  #map {
+  #restaurant-content #map {
     height: 100%;
   }
-  #restaurant-container {
+  #restaurant-content #restaurant-container {
     grid-row: 1;
     grid-column: 1;
     width: 100%;
@@ -43,7 +43,7 @@
     text-align: center;
   }
  
-  #reviews-list {
+  .list {
     flex-direction: row;
     flex-wrap: wrap;
   }
@@ -51,8 +51,17 @@
     display: flex;
     flex-direction: column;
   }
-  #reviews-list li {
+  #reviews-list.list li {
     max-width: 300px;
     margin: 0.5rem;
+  }
+  
+  #restaurants-list {
+    flex-direction: row;
+  }
+  
+  .filter-options {
+    flex-direction: row;
+    justify-content: center;
   }
 }

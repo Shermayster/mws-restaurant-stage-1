@@ -45,7 +45,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     text-transform: uppercase;
 }
 
-#maincontent {
+.maincontent {
     background-color: #f3f3f3;
     min-height: 100%;
     display: grid;
@@ -158,7 +158,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     margin: 0;
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column;
+    flex-direction: row;
     padding: 0;
 }
 
@@ -171,6 +171,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     text-align: center;
     /*! width: 270px; */
     padding: 0.5rem;
+    max-width: 380px;
 }
 
 #restaurants-list .restaurant-img {
@@ -288,7 +289,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     margin-left: 0.5rem;
 }
 
-#reviews-list {
+.list {
     display: flex;
     justify-content: center;
     flex-direction:  column;
