@@ -169,7 +169,6 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     margin: 15px;
     min-height: 380px;
     text-align: center;
-    /*! width: 270px; */
     padding: 0.5rem;
     max-width: 380px;
 }
@@ -210,6 +209,9 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
+}
+#restaurants-list li a:focus {
+    border-bottom: none;
 }
 
 /* ====================== Restaurant Details ====================== */
@@ -311,7 +313,8 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #reviews-list li p {
     margin: 0 0 10px;
 }
-restaurant-address
+
+
 #reviews-list li p.review-raiting {
     color: #fff;
     display: inline-flex;
