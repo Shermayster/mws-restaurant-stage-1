@@ -137,30 +137,49 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  this.appendRestaurantItems(restaurant, li);
+  return li
+}
 
+appendRestaurantItems = (restaurant, li) => {
+  this.appendRestaurantImage(restaurant, li);
+  this.appendRestaurantTitle(restaurant, li);
+  this.appendRestaurantNeighborhood(restaurant, li);
+  this.appendRestaurantAddress(restaurant, li);
+  this.appendRestaurantDetails(restaurant, li);
+}
+
+appendRestaurantImage = (restaurant, li) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = restaurant.name;
   li.append(image);
+}
 
-  const name = document.createElement('h1');
+appendRestaurantTitle = (restaurant, li) => {
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
+}
 
+appendRestaurantNeighborhood = (restaurant, li) => {
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
+}
 
+appendRestaurantAddress = (restaurant, li) => {
   const address = document.createElement('p');
   address.innerHTML = restaurant.address;
   li.append(address);
+}
 
+appendRestaurantDetails = (restaurant, li) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
-
-  return li
 }
 
 /**
