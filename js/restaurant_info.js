@@ -10,6 +10,9 @@ if('serviceWorker' in navigator) {
   .then(() => {
     console.log('service worker registered!');
   })
+  .catch((err) => {
+    console.log(err);
+  })
 }
 
 /**
