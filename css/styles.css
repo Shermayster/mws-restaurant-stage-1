@@ -63,6 +63,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     width: 100vw;
 }
 
+
 /* ====================== Header ========================== */
 .title {
     height: 5rem;
@@ -72,8 +73,8 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 
 .title h1 {
-    color: #B4B5B8;
-    font-size: 1rem;
+    color: #E9E9E9;
+    font-size: 1.5rem;
     font-weight: 100;
     letter-spacing: 6px;
     text-transform: uppercase;
@@ -133,7 +134,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 
 .filter-options h2 {
     color: white;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: normal;
     line-height: 1;
     margin: 10px 0 0;
@@ -313,8 +314,6 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #reviews-list li p {
     margin: 0 0 10px;
 }
-
-
 #reviews-list li p.review-raiting {
     color: #fff;
     display: inline-flex;
