@@ -1,0 +1,7 @@
+{
+    "name": "Restaurant Reviews",
+    "short_name": "PWAReviews",
+    "start_url": "/index.html",
+    "scope": ".",
+    "display": "standalone"
+}

@@ -5,6 +5,17 @@ var map
 var markers = []
 
 /**
+ * Add service worker to main page
+ */
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker
+  .register('./sw.js')
+  .then(() => {
+    console.log('service worker registered!');
+  })
+}
+
+/**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
