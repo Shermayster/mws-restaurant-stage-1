@@ -94,6 +94,16 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+  const loadedMap = self.map;
+  console.log(loadedMap);
+  google.maps.event.addListener(loadedMap, "tilesloaded", () => {
+    document.querySelectorAll('#map a').forEach(item => {
+      item.setAttribute('tabindex','-1');
+    });
+    document.querySelectorAll('#map area').forEach(item => {
+      item.setAttribute('tabindex','-1');
+    });
+  })
   updateRestaurants();
 }
 
@@ -167,12 +177,12 @@ appendRestaurantImage = (restaurant, li) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.name;
+  image.alt = `Restaurant: ${restaurant.name}`;
   li.append(image);
 }
 
 appendRestaurantTitle = (restaurant, li) => {
-  const name = document.createElement('h2');
+  const name = document.createElement('h3');
   name.innerHTML = restaurant.name;
   li.append(name);
 }

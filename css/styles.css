@@ -7,7 +7,7 @@ body,td,th,p {
 }
 
 body {
-    background-color: #fdfdfd;
+    background-color: #eeeeee;
     margin: 0;
     position: relative;
 }
@@ -89,6 +89,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     display: flex;
     justify-content: flex-start;
     line-height: 2rem;
+    border-bottom: 1px solid #8080803b;
 }
 
 /* Display list items side by side */
@@ -284,12 +285,13 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     margin-bottom: 5rem;
 }
 
-#reviews-container h2 {
+#reviews-container h3 {
     color: #f58500;
     font-size: 2.4rem;
     font-weight: 300;
     letter-spacing: -1px;
     margin-left: 0.5rem;
+    text-align: center;
 }
 
 .list {
@@ -327,7 +329,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #restaurant-hours {
     background-color: #fff;
     padding: 1rem;
-    width: 100vw;
+    width: calc(100vw - 2rem);
 }
 
 #restaurant-hours td {
