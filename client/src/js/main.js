@@ -95,7 +95,7 @@ window.initMap = () => {
     scrollwheel: false
   });
   const loadedMap = self.map;
-  // disable keyboard navigation to google maps
+  // disable keyboard navigation for google maps
   google.maps.event.addListener(loadedMap, "tilesloaded", () => {
     document.querySelectorAll('#map a').forEach(item => {
       item.setAttribute('tabindex','-1');

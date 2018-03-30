@@ -1,0 +1,10 @@
+{
+    "scripts": {
+        "start": "python -m SimpleHTTPServer 8000"
+    },
+    "devDependencies": {
+        "gulp": "^3.9.1",
+        "gulp-postcss": "^7.0.1",
+        "gulp-sourcemaps": "^2.6.4"
+    }
+}
