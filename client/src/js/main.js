@@ -2,20 +2,19 @@ let restaurants,
   neighborhoods,
   cuisines
 var map
-var markers = []
+var markers = [];
 
 /**
  * Add service worker to main page
  */
+
 if('serviceWorker' in navigator) {
-  navigator.serviceWorker
-  .register('./sw.js')
-  .then(() => {
+  navigator.serviceWorker.register('./sw.js').then(() => {
     console.log('service worker registered!');
   })
   .catch((err) => {
     console.log(err);
-  })
+  });
 }
 
 /**
