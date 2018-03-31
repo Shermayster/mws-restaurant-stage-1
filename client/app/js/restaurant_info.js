@@ -1,3 +1,4 @@
+/* eslint-env browser */
 let restaurant;
 var map;
 
