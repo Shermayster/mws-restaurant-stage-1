@@ -1,10 +1,11 @@
-/* eslint-env browser */
-/*global  DBHelper, google*/
-let restaurants,
-  neighborhoods,
-  cuisines
-var map
-var markers = [];
+/* eslint-env browser, no-unused-vars: "off" */
+/* global  DBHelper, google */
+/* */
+let restaurants;
+let neighborhoods;
+let cuisines;
+let map;
+let markers = [];
 
 /**
  * Add service worker to main page
@@ -22,7 +23,7 @@ if ('serviceWorker' in navigator) {
 /**
  * Set cuisines HTML.
  */
-const fillCuisinesHTML = (cuisines = self.cuisines) => {
+const fillCuisinesHTML = () => {
   const select = document.getElementById('cuisines-select');
   cuisines.forEach(cuisine => {
     const option = document.createElement('option');
@@ -50,7 +51,7 @@ const fetchCuisines = () => {
 /**
  * Set neighborhoods HTML.
  */
-const fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
+const fillNeighborhoodsHTML = () => {
   const select = document.getElementById('neighborhoods-select');
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement('option');
@@ -96,7 +97,7 @@ const appendRestaurantDetails = (restaurant, li) => {
 /**
  * Add markers for current restaurants to the map.
  */
-const addMarkersToMap = (restaurants = self.restaurants) => {
+const addMarkersToMap = () => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
@@ -117,6 +118,8 @@ const appendRestaurantItems = (restaurant, li) => {
 
 /**
  * Create restaurant HTML.
+ * @param {*} restaurant restaurna object
+ * @return {*} HTML Element
  */
 const createRestaurantHTML = restaurant => {
   const li = document.createElement('li');
@@ -127,7 +130,7 @@ const createRestaurantHTML = restaurant => {
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
-const fillRestaurantsHTML = (restaurants = self.restaurants) => {
+const fillRestaurantsHTML = () => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
@@ -138,30 +141,31 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Fetch all neighborhoods and set their HTML.
  */
 const fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+  DBHelper.fetchNeighborhoods((error, neighborhoodsList) => {
     if (error) {
       // Got an error
       console.error(error);
     } else {
-      neighborhoods = neighborhoods;
+      neighborhoods = neighborhoodsList;
       fillNeighborhoodsHTML();
     }
   });
 };
 
 /**
- * Clear current restaurants, their HTML and remove their map markers.
+ * @desc Clear current restaurants, their HTML and remove their map markers.
+ * @param {*} restaurantsList todo: add list description
  */
-const resetRestaurants = restaurants => {
+const resetRestaurants = restaurantsList => {
   // Remove all restaurants
-  self.restaurants = [];
+  restaurants = [];
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
 
   // Remove all map markers
-  self.markers.forEach(m => m.setMap(null));
-  self.markers = [];
-  self.restaurants = restaurants;
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+  restaurants = restaurantsList;
 };
 
 /**
@@ -178,12 +182,12 @@ const updateRestaurants = () => {
   const neighborhood = nSelect[nIndex].value;
 
   DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood,
-    (error, restaurants) => {
+    (error, restaurantsList) => {
       if (error) {
         // Got an error!
         console.error(error);
       } else {
-        resetRestaurants(restaurants);
+        resetRestaurants(restaurantsList);
         fillRestaurantsHTML();
       }
     });
@@ -205,12 +209,12 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   };
-  self.map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
     scrollwheel: false
   });
-  const loadedMap = self.map;
+  const loadedMap = map;
   // disable keyboard navigation for google maps
   google.maps.event.addListener(loadedMap, 'tilesloaded', () => {
     document.querySelectorAll('#map a').forEach(item => {
