@@ -1,4 +1,6 @@
 /* eslint-env browser */
+/* no-unused-vars: ["error", { "varsIgnorePattern": "DBHelper" }] */
+
 
 /**
  * Common database helper functions.

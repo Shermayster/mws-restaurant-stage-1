@@ -11,6 +11,7 @@
         "babel-preset-es2017": "^6.24.1",
         "browser-sync": "^2.14.0",
         "del": "^2.2.2",
+        "eslint": "^4.19.1",
         "eslint-config-google": "^0.3.0",
         "gulp": "^3.9.1",
         "gulp-autoprefixer": "^3.1.1",
@@ -38,6 +39,17 @@
         "extends": "google",
         "parserOptions": {
             "ecmaVersion": 2017
-        }
+        },
+        "globals": {
+            "DBHelper": true,
+            "google": true
+        },
+        "rules": {
+            "space-after-keywords": "off",
+            "space-before-keywords": "off",
+            "no-empty-label": "off",
+            "space-return-throw-case": "off",
+            "keyword-spacing": [2, {"before": true, "after": true}]
+          }
     }
 }
