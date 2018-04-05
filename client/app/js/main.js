@@ -4,21 +4,22 @@
 /**
  * Add service worker to main page
  */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').then(() => {
-    console.log('service worker registered!');
-  }).catch(err => {
-    console.log(err);
-  });
-}
+
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('./sw.js').then(() => {
+//     console.log('service worker registered!');
+//   }).catch(err => {
+//     console.log(err);
+//   });
+// }
 
 let map;
 
 class Main {
   constructor() {
-    this.restaurants = [];
-    this.neighborhoods = [];
-    this.cuisines = [];
+    this.restaurants = null;
+    this.neighborhoods = null;
+    this.cuisines = null;
     this.markers = [];
   }
 
@@ -39,14 +40,9 @@ class Main {
      * Fetch all cuisines and set their HTML.
    */
   fetchCuisines() {
-    DBHelper.fetchCuisines((error, cuisines) => {
-      if (error) {
-        // Got an error!
-        console.error(error);
-      } else {
-        this.cuisines = cuisines;
-        this.fillCuisinesHTML();
-      }
+    DBHelper.fetchCuisines().then(cuisines => {
+      this.cuisines = cuisines;
+      this.fillCuisinesHTML();
     });
   }
 
@@ -120,7 +116,7 @@ class Main {
 
   /**
      * Create restaurant HTML.
-     * @param {*} restaurant restaurna object
+     * @param {*} restaurant object
      * @return {*} HTML Element
      */
   createRestaurantHTML(restaurant) {
@@ -143,14 +139,9 @@ class Main {
      * Fetch all neighborhoods and set their HTML.
      */
   fetchNeighborhoods() {
-    DBHelper.fetchNeighborhoods((error, neighborhoodsList) => {
-      if (error) {
-        // Got an error
-        console.error(error);
-      } else {
-        this.neighborhoods = neighborhoodsList;
-        this.fillNeighborhoodsHTML();
-      }
+    DBHelper.fetchNeighborhoods().then(neighborhoodsList => {
+      this.neighborhoods = neighborhoodsList;
+      this.fillNeighborhoodsHTML();
     });
   }
 
@@ -183,15 +174,10 @@ class Main {
     const cuisine = cSelect[cIndex].value;
     const neighborhood = nSelect[nIndex].value;
 
-    DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood,
-      (error, restaurantsList) => {
-        if (error) {
-          // Got an error!
-          console.error(error);
-        } else {
-          this.resetRestaurants(restaurantsList);
-          this.fillRestaurantsHTML();
-        }
+    DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood)
+      .then(restaurantsList => {
+        this.resetRestaurants(restaurantsList);
+        this.fillRestaurantsHTML();
       });
   }
 }

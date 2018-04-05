@@ -1,6 +1,3 @@
-/**
- *
- */
 
 'use strict';
 import path from 'path';
@@ -17,22 +14,23 @@ const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
 // Lint JavaScript
-gulp.task('lint', () =>
-  gulp.src(['app/js/**/*.js', '!node_modules/**'])
-    .pipe($.eslint())
-    .pipe($.eslint.format())
-    .pipe($.if(!browserSync.active, $.eslint.failAfterError()))
-);
+// gulp.task('lint', () =>
+//   gulp.src(['app/js/**/*.js', '!node_modules/**'])
+//     .pipe($.eslint())
+//     .pipe($.eslint.format())
+//     .pipe($.if(!browserSync.active, $.eslint.failAfterError()))
+// );
 
 // Optimize images
-gulp.task('images', () =>
-  gulp.src('app/images/**/*')
-    .pipe($.cache($.imagemin({
+gulp.task('img', () =>
+  gulp.src(['app/img/**/*'])
+  .pipe($.imagemin({
       progressive: true,
       interlaced: true
-    })))
-    .pipe(gulp.dest('dist/images'))
-    .pipe($.size({title: 'images'}))
+    }))
+    .pipe($.size({title: 'img'}))
+    .pipe(gulp.dest('dist/img'))
+    .pipe(gulp.dest('.tmp/img'))
 );
 
 // Copy all files at the root level (app)
@@ -44,6 +42,7 @@ gulp.task('copy', () =>
   ], {
     dot: true
   }).pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('.tmp'))
     .pipe($.size({title: 'copy'}))
 );
 
@@ -63,22 +62,18 @@ gulp.task('styles', () => {
 
   // For best performance, don't add Sass partials to `gulp.src`
   return gulp.src([
-    'app/styles/**/*.scss',
-    'app/styles/**/*.css'
+    'app/css/**/*.css',
+    'app/css/styles.css'
   ])
-    .pipe($.newer('.tmp/styles'))
+    .pipe($.newer('.tmp/css'))
     .pipe($.sourcemaps.init())
-    .pipe($.sass({
-      precision: 10
-    }).on('error', $.sass.logError))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
-    .pipe(gulp.dest('.tmp/styles'))
     // Concatenate and minify styles
     .pipe($.if('*.css', $.cssnano()))
-    .pipe($.size({title: 'styles'}))
+    .pipe($.size({title: 'css'}))
     .pipe($.sourcemaps.write('./'))
-    .pipe(gulp.dest('dist/styles'))
-    .pipe(gulp.dest('.tmp/styles'));
+    .pipe(gulp.dest('dist/css'))
+    .pipe(gulp.dest('.tmp/css'))
 });
 
 // Concatenate and minify JavaScript. Optionally transpiles ES2015 code to ES5.
@@ -86,9 +81,9 @@ gulp.task('styles', () => {
 // `.babelrc` file.
 gulp.task('scripts', () =>
     gulp.src([
-      './app/js/dbhelper.js',
-      './app/js/main.js',
-      './app/js/restaurant_info.js'
+      './app/js/*.js',
+      // './app/js/main.js',
+      // './app/js/restaurant_info.js'
 
     ])
       .pipe($.newer('.tmp/js'))
@@ -102,39 +97,39 @@ gulp.task('scripts', () =>
       .pipe($.size({title: 'js'}))
       .pipe($.sourcemaps.write('.'))
       .pipe(gulp.dest('dist/js'))
-      .pipe(gulp.dest('.tmp/js'))
 );
 
 // Scan your HTML for assets & optimize them
 gulp.task('html', () => {
   return gulp.src('app/**/*.html')
     .pipe($.useref({
-      searchPath: '{.tmp,app}',
-      noAssets: true
+      // searchPath: '{.tmp,app}',
+      // noAssets: true
     }))
 
     // Minify any HTML
     .pipe($.if('*.html', $.htmlmin({
       removeComments: true,
       collapseWhitespace: true,
-      collapseBooleanAttributes: true,
-      removeAttributeQuotes: true,
-      removeRedundantAttributes: true,
-      removeEmptyAttributes: true,
-      removeScriptTypeAttributes: true,
-      removeStyleLinkTypeAttributes: true,
-      removeOptionalTags: true
+      // collapseBooleanAttributes: true,
+      // removeAttributeQuotes: true,
+      // removeRedundantAttributes: true,
+      // removeEmptyAttributes: true,
+      // removeScriptTypeAttributes: true,
+      // removeStyleLinkTypeAttributes: true,
+      // removeOptionalTags: true
     })))
     // Output files
     .pipe($.if('*.html', $.size({title: 'html', showFiles: true})))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('.tmp'));
 });
 
 // Clean output directory
 gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 
 // Watch files for changes & reload
-gulp.task('serve', ['scripts', 'styles'], () => {
+gulp.task('serve', ['scripts', 'styles', 'html', 'img', 'copy'], () => {
   browserSync({
     notify: false,
     // Customize the Browsersync console logging prefix
@@ -145,13 +140,13 @@ gulp.task('serve', ['scripts', 'styles'], () => {
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
-    server: ['.tmp', 'app'],
+    server: ['.tmp'],
     port: 3000
   });
 
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/css/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/js/**/*.js'], ['lint', 'scripts', reload]);
+  gulp.watch(['app/js/**/*.js'], ['scripts', reload]);
   gulp.watch(['app/img/**/*'], reload);
 });
 
@@ -175,9 +170,9 @@ gulp.task('serve:dist', ['default'], () =>
 gulp.task('default', ['clean'], cb =>
   runSequence(
     'styles',
-    ['lint', 'html', 'scripts', 'images', 'copy'],
-    'generate-service-worker',
-    cb
+    ['html', 'scripts', 'img', 'copy'],
+    // 'generate-service-worker',
+    // cb
   )
 );
 
@@ -193,41 +188,41 @@ gulp.task('pagespeed', cb =>
 );
 
 // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
-gulp.task('copy-sw-scripts', () => {
-  return gulp.src(['node_modules/sw-toolbox/sw-toolbox.js', 'app/js/sw/runtime-caching.js'])
-    .pipe(gulp.dest('dist/js/sw'));
-});
+// gulp.task('copy-sw-scripts', () => {
+//   return gulp.src(['node_modules/sw-toolbox/sw-toolbox.js', 'app/js/sw/runtime-caching.js'])
+//     .pipe(gulp.dest('dist/js/sw'));
+// });
 
 // See http://www.html5rocks.com/en/tutorials/service-worker/introduction/ for
 // an in-depth explanation of what service workers are and why you should care.
 // Generate a service worker file that will provide offline functionality for
 // local resources. This should only be done for the 'dist' directory, to allow
 // live reload to work as expected when serving from the 'app' directory.
-gulp.task('generate-service-worker', ['copy-sw-scripts'], () => {
-  const rootDir = 'dist';
-  const filepath = path.join(rootDir, 'service-worker.js');
+// gulp.task('generate-service-worker', ['copy-sw-scripts'], () => {
+//   const rootDir = 'dist';
+//   const filepath = path.join(rootDir, 'service-worker.js');
 
-  return swPrecache.write(filepath, {
-    // Used to avoid cache conflicts when serving on localhost.
-    cacheId: pkg.name || 'web-starter-kit',
-    // sw-toolbox.js needs to be listed first. It sets up methods used in runtime-caching.js.
-    importScripts: [
-      'js/sw/sw-toolbox.js',
-      'js/sw/runtime-caching.js'
-    ],
-    staticFileGlobs: [
-      // Add/remove glob patterns to match your directory setup.
-      `${rootDir}/images/**/*`,
-      `${rootDir}/js/**/*.js`,
-      `${rootDir}/styles/**/*.css`,
-      `${rootDir}/*.{html,json}`
-    ],
-    // Translates a static file path to the relative URL that it's served from.
-    // This is '/' rather than path.sep because the paths returned from
-    // glob always use '/'.
-    stripPrefix: rootDir + '/'
-  });
-});
+//   return swPrecache.write(filepath, {
+//     // Used to avoid cache conflicts when serving on localhost.
+//     cacheId: pkg.name || 'web-starter-kit',
+//     // sw-toolbox.js needs to be listed first. It sets up methods used in runtime-caching.js.
+//     importScripts: [
+//       'js/sw/sw-toolbox.js',
+//       'js/sw/runtime-caching.js'
+//     ],
+//     staticFileGlobs: [
+//       // Add/remove glob patterns to match your directory setup.
+//       `${rootDir}/img/**/*`,
+//       `${rootDir}/js/**/*.js`,
+//       `${rootDir}/css/**/*.css`,
+//       `${rootDir}/*.{html,json}`
+//     ],
+//     // Translates a static file path to the relative URL that it's served from.
+//     // This is '/' rather than path.sep because the paths returned from
+//     // glob always use '/'.
+//     stripPrefix: rootDir + '/'
+//   });
+// });
 
 // Load custom tasks from the `tasks` directory
 // Run: `npm install --save-dev require-dir` from the command-line

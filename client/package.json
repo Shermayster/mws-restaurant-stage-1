@@ -49,7 +49,15 @@
             "space-before-keywords": "off",
             "no-empty-label": "off",
             "space-return-throw-case": "off",
-            "keyword-spacing": [2, {"before": true, "after": true}]
-          }
+            "valid-jsdoc": "off",
+            "no-inline-comments": "off",
+            "keyword-spacing": [
+                2,
+                {
+                    "before": true,
+                    "after": true
+                }
+            ]
+        }
     }
 }
