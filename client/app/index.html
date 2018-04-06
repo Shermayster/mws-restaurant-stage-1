@@ -1,54 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <title>Restaurant Reviews</title>
 
-<head> 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/styles-medium.css">
-  <link rel="manifest" href="./manifest.json">
-  <title>Restaurant Reviews</title>
-</head>
+    <!-- Place favicon.ico in the root directory -->
 
-<body>
-  <header>
-    <div class="title">
-      <h1>Restaurant Reviews</h1>
-    </div>
-  </header>
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
 
-  <main class="maincontent">
-    <section id="map-container" tabindex="-1">
-      <div id="map" tabindex="-1" role="application"></div>
-    </section>
-    <section>
-      <div class="filter-options">
-        <h2 class="uppercase">Filter Results</h2>
-        <select aria-label="Select Neighborhoods" 
-          id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-          <option value="all">All Neighborhoods</option>
-        </select>
-        <select aria-label="Select Cuisines" 
-          id="cuisines-select" name="cuisines" 
-          onchange="updateRestaurants()">
-          <option value="all">All Cuisines</option>
-        </select>
-      </div>
-      <ul id="restaurants-list" class="list"></ul>
-    </section>
-  </main>
+    <!-- build:css styles/main.css -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/styles-medium.css">
+    <link rel="manifest" href="./manifest.json">
+    <!-- endbuild -->
+  </head>
+  <body>
+    <!--[if IE]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTTZOCiF4Et51Q4h481ThDlGZc4J_NMBc&libraries=places&callback=initMap"></script>
+    <body>
+      <header>
+        <div class="title">
+          <h1>Restaurant Reviews</h1>
+        </div>
+      </header>
+
+      <main class="maincontent">
+        <section id="map-container" tabindex="-1">
+          <div id="map" tabindex="-1" role="application"></div>
+        </section>
+        <section>
+          <div class="filter-options">
+            <h2 class="uppercase">Filter Results</h2>
+            <select aria-label="Select Neighborhoods"
+              id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+              <option value="all">All Neighborhoods</option>
+            </select>
+            <select aria-label="Select Cuisines"
+              id="cuisines-select" name="cuisines"
+              onchange="updateRestaurants()">
+              <option value="all">All Cuisines</option>
+            </select>
+          </div>
+          <ul id="restaurants-list" class="list"></ul>
+        </section>
+      </main>
 
 
-  <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
-  </footer>
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTTZOCiF4Et51Q4h481ThDlGZc4J_NMBc&libraries=places&callback=initMap"></script>
 
-</body>
 
+      <footer id="footer">
+        Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+      </footer>
+
+    </body>
+
+
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js scripts/main.js -->
+    <!-- <script src="scripts/main.js"></script> -->
+    <script type="application/javascript" charset="utf-8" src="scripts/dbhelper.js"></script>
+    <script type="application/javascript" charset="utf-8" src="scripts/main.js"></script>
+    <!-- endbuild -->
+  </body>
 </html>

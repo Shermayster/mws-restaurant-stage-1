@@ -5,13 +5,13 @@
  * Add service worker to main page
  */
 
-// if ('serviceWorker' in navigator) {
-//   navigator.serviceWorker.register('./sw.js').then(() => {
-//     console.log('service worker registered!');
-//   }).catch(err => {
-//     console.log(err);
-//   });
-// }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').then(() => {
+    console.log('service worker registered!');
+  }).catch(err => {
+    console.log(err);
+  });
+}
 
 let map;
 
@@ -43,7 +43,7 @@ class Main {
     DBHelper.fetchCuisines().then(cuisines => {
       this.cuisines = cuisines;
       this.fillCuisinesHTML();
-    });
+    }, error => console.log(error));
   }
 
   /**
@@ -178,7 +178,7 @@ class Main {
       .then(restaurantsList => {
         this.resetRestaurants(restaurantsList);
         this.fillRestaurantsHTML();
-      });
+      }, error => console.log(error));
   }
 }
 

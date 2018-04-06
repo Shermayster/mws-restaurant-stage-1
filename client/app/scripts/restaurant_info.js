@@ -26,24 +26,22 @@ class RestarauntInfo {
   fetchRestaurantFromURL(callback) {
     if (this.restaurant) {
     // restaurant already fetched!
-      callback(null, this.restaurant);
-      return;
+      return new Promise(this.restaurant);
     }
     const id = this.getParameterByName('id');
-    const idNotFound = !id;
-    if (idNotFound) {
+    if (!id) {
       // no id found in URL
       const error = 'No restaurant id in URL';
       callback(error, null);
     } else {
-      DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+      return DBHelper.fetchRestaurantById(id).then(restaurant => {
         this.restaurant = restaurant;
         if (!restaurant) {
-          console.error(error);
+          console.error('resturant not found');
           return;
         }
         this.fillRestaurantHTML();
-        callback(null, restaurant);
+        return restaurant;
       });
     }
   }
@@ -199,18 +197,14 @@ const restarauntInfo = new RestarauntInfo();
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
-  restarauntInfo.fetchRestaurantFromURL((error, restaurant) => {
-    if (error) {
-      // Got an error!
-      console.error(error);
-    } else {
-      const map = new google.maps.Map(document.getElementById('map'), {
+  restarauntInfo.fetchRestaurantFromURL()
+  .then(restaurant  => {
+    const map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false
       });
       restarauntInfo.fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(restarauntInfo.restaurant, map);
-    }
-  });
+    });
 };

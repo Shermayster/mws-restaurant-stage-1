@@ -1,19 +1,31 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Info</title>
+
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/styles-medium.css">
+  <!-- Place favicon.ico in the root directory -->
+
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/styles-medium.css">
   <!-- Manifest file -->
   <link rel="manifest" href="./manifest.json">
-  <title>Restaurant Info</title>
+  <!-- endbuild -->
+
 </head>
+  <!--[if IE]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
 
 <body class="inside">
   <!-- Beginning header -->
@@ -22,8 +34,8 @@
       <div class="title">
           <h1>Restaurant Reviews</h1>
       </div>
-      
-    <!-- Beginning nav --> 
+
+    <!-- Beginning nav -->
     <nav aria-label="Breadcrumb">
     <!-- Beginning breadcrumb -->
     <ul id="breadcrumb">
@@ -67,9 +79,9 @@
 
   <!-- Beginning scripts -->
   <!-- Database helpers -->
-  <script type="text/javascript" src="js/dbhelper.js"></script>
+  <script type="text/javascript" src="scripts/dbhelper.js"></script>
   <!-- Main javascript file -->
-  <script type="text/javascript" src="js/restaurant_info.js"></script>
+  <script type="text/javascript" src="scripts/restaurant_info.js"></script>
   <!-- Google Maps -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTTZOCiF4Et51Q4h481ThDlGZc4J_NMBc&libraries=places&callback=initMap"></script>
   <!-- End scripts -->

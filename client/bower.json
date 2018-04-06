@@ -1,0 +1,13 @@
+{
+  "name": "yo-webapp",
+  "private": true,
+  "dependencies": {
+
+  },
+  "overrides": {
+    "bootstrap-sass": {
+      "main": [
+      ]
+    }
+  }
+}
