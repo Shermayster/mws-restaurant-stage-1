@@ -1,5 +1,5 @@
-var CACHE_VERSION_STATIC = 'static-v10';
-var CACHE_VERSION_DYNAMIC = 'dynamic-v5'
+var CACHE_VERSION_STATIC = 'static-v1';
+var CACHE_VERSION_DYNAMIC = 'dynamic-v1'
 self.addEventListener('install', event => {
   event.waitUntil(
     // create cache
@@ -41,15 +41,18 @@ self.addEventListener('fetch', event => {
         .then(response => {
           console.log('dynamic cache', event.request.url)
           // try to load from cache
-          return response || fetch(event.request).then(res => {
-            caches.open(CACHE_VERSION_DYNAMIC).then(cache => {
-              cache.put(event.request.url, res.clone());
-
-              // return response to the app
-              return res;
-            });
-          })
-            .catch(err => console.log(err));
+          if (response) {
+            return response;
+          } else {
+            return fetch(event.request)
+              .then(res => {
+                return caches.open(CACHE_VERSION_DYNAMIC).then(cache => {
+                   cache.put(event.request.url, res.clone());
+                   // return response to the app
+                   return res;
+                 });
+             }).catch(err => console.log(err));
+          }
         }));
       } else {
         return fetch(event.request).then(res => res);
