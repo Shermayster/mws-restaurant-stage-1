@@ -184,6 +184,7 @@ class Main {
 
 const main = new Main();
 
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */

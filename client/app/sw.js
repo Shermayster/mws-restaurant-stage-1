@@ -1,4 +1,4 @@
-var CACHE_VERSION_STATIC = 'static-v1';
+var CACHE_VERSION_STATIC = 'static-v2';
 var CACHE_VERSION_DYNAMIC = 'dynamic-v1'
 self.addEventListener('install', event => {
   event.waitUntil(
