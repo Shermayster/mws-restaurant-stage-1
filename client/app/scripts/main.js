@@ -195,7 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+(window.initMap && google) ? initMap()  : console.log('initmap underfined');
+
+function initMap() {
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -216,5 +218,4 @@ window.initMap = () => {
     });
   });
   main.updateRestaurants();
-};
-
+}
