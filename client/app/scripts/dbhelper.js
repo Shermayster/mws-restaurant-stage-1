@@ -18,7 +18,7 @@ class DBHelper {
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
+  static fetchRestaurants() {
     return fetch(DBHelper.DATABASE_URL)
       .then(res => res.json())
       .catch(error => console.log(error));
@@ -139,4 +139,3 @@ class DBHelper {
     return marker;
   }
 }
-
