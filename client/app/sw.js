@@ -1,6 +1,7 @@
 importScripts('./scripts/idb.js');
+importScripts('./scripts/utils.js');
 
-var CACHE_VERSION_STATIC = 'static-v4';
+var CACHE_VERSION_STATIC = 'static-v15';
 var CACHE_VERSION_DYNAMIC = 'dynamic-v3';
 
 self.addEventListener('install', event => {
@@ -26,12 +27,6 @@ self.addEventListener('install', event => {
   );
 });
 
-const dbPromise = idb.open('restaurants-store', 1, db => {
-  if(!db.objectStoreNames.contains('restaurants')) {
-    db.createObjectStore('restaurants')
-  }
-})
-
 self.addEventListener('activate', function(event) {
   console.log('[Service Worker] Activating Service Worker ....', event);
   event.waitUntil(
@@ -50,44 +45,47 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', event => {
-  if (
-    !event.request.url.includes('maps.googleapis.com') &&
-    !event.request.url.includes('browser-sync')
-  ) {
-    if(event.request.url.includes('restaurants')) {
+  if(event.request.url.includes('restaurants')) {
       event.respondWith(fetch(event.request).then(res => {
         const clonedRes = res.clone();
-        clonedRes.json().then(data => {
-          dbPromise.then((db) => {
-            console.log(data);
-            const tx = db.transaction('restaurants', 'readwrite');
-            tx.objectStore('restaurants').put(data, 'restaurants');
-            return tx.complete;
-          });
+        readAllData('restaurants').then(() => {
+          return clonedRes.json();
+        }).then(data => {
+          writeData('restaurants', data, 'restaurants');
         })
         return res;
-      }))
-    }
-    // event.respondWith(
-    //   caches.match(event.request).then(response => {
-    //     console.log('dynamic cache', event.request.url);
-    //     // try to load from cache
-    //     if (response) {
-    //       return response;
-    //     } else {
-    //       return fetch(event.request)
-    //         .then(res => {
-    //           return caches.open(CACHE_VERSION_DYNAMIC).then(cache => {
-    //             cache.put(event.request.url, res.clone());
-    //             // return response to the app
-    //             return res;
-    //           });
-    //         })
-    //         .catch(err => console.log(err));
-    //     }
-    //   })
-    // );
+      }));
+    } else if (event.request.url.includes('images')) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(function (response) {
+          if (response) {
+            return response;
+          } else {
+            return fetch(event.request)
+              .then(function (res) {
+                return caches.open(CACHE_VERSION_DYNAMIC)
+                  .then(function (cache) {
+                    // trimCache(CACHE_DYNAMIC_NAME, 3);
+                    cache.put(event.request.url, res.clone());
+                    return res;
+                  })
+              })
+            }
+          })
+        )
   } else {
     return fetch(event.request).then(res => res);
   }
 });
+
+function isInArray(string, array) {
+  var cachePath;
+  if (string.indexOf(self.origin) === 0) { // request targets domain where we serve the page from (i.e. NOT a CDN)
+    console.log('matched ', string);
+    cachePath = string.substring(self.origin.length); // take the part of the URL AFTER the domain (e.g. after localhost:8080)
+  } else {
+    cachePath = string; // store the full request (for CDNs)
+  }
+  return array.indexOf(cachePath) > -1;
+}

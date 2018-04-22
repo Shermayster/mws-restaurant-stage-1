@@ -1,9 +1,7 @@
-/* eslint-env browser */
-/* eslint no-unused-vars: "off"*/
-
 /**
  * Common database helper functions.
  */
+var networkDataReceived = false;
 class DBHelper {
   /**
    * Database URL.
@@ -19,9 +17,15 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-    return fetch(DBHelper.DATABASE_URL)
-      .then(res => res.json())
-      .catch(error => console.log(error));
+    // if('indexedDB' in window) {
+    //   const data = readData('restaurants');
+    //   return data ? data : DBHelper._fetchRestaurants();
+    // } else {
+    //  return DBHelper._fetchRestaurants;
+    // }
+    return readData('restaurants').then(res => {
+      return res ? res : DBHelper._fetchRestaurants();
+    })
   }
 
   /**
@@ -137,5 +141,11 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
+  }
+
+  static _fetchRestaurants() {
+    return fetch(DBHelper.DATABASE_URL)
+    .then(res => res.json())
+    .catch(error => console.log(error));
   }
 }
