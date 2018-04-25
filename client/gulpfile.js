@@ -23,10 +23,25 @@ gulp.task('styles', () => {
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.if(dev, $.sourcemaps.write()))
     .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest('dist/styles'))
     .pipe(reload({stream: true}));
 });
 
+gulp.task('styles-build', () => {
+  return gulp.src('app/styles/*.scss')
+    .pipe($.plumber())
+    .pipe($.if(dev, $.sourcemaps.init()))
+    .pipe($.sass.sync({
+      outputStyle: 'expanded',
+      precision: 10,
+      includePaths: ['.']
+    }).on('error', $.sass.logError))
+    .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
+    .pipe(gulp.dest('dist/styles'))
+});
+
 gulp.task('scripts', () => {
+  console.log('scripts');
   return gulp.src('app/scripts/**/*.js')
     .pipe($.plumber())
     .pipe($.if(dev, $.sourcemaps.init()))
@@ -34,6 +49,15 @@ gulp.task('scripts', () => {
     .pipe($.if(dev, $.sourcemaps.write('.')))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(reload({stream: true}));
+});
+
+gulp.task('scripts-build', () => {
+  console.log('scripts-build');
+  return gulp.src('app/scripts/**/*.js')
+    .pipe($.plumber())
+    .pipe($.babel())
+    .pipe($.uglify())
+    .pipe(gulp.dest('dist/scripts'))
 });
 
 function lint(files) {
@@ -53,15 +77,10 @@ gulp.task('lint:test', () => {
     .pipe(gulp.dest('test/spec'));
 });
 
-gulp.task('html', ['styles', 'scripts'], () => {
+gulp.task('html', () => {
   return gulp.src('app/*.html')
-    .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
-    .pipe($.if(/\.js$/, $.uglify()))
-    .pipe($.if(/\.css$/, $.cssnano({preset: 'default'})))
     .pipe($.if(/\.html$/, $.htmlmin({
       collapseWhitespace: true,
-      minifyCSS: true,
-      minifyJS: {compress: {drop_console: true}},
       processConditionalComments: true,
       removeComments: true,
       removeEmptyAttributes: true,
@@ -171,7 +190,7 @@ gulp.task('wiredep', () => {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('build', ['lint', 'html', 'scripts', 'images', 'fonts', 'extras'], () => {
+gulp.task('build', ['lint', 'html', 'scripts-build', 'styles-build', 'images', 'fonts', 'extras'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
