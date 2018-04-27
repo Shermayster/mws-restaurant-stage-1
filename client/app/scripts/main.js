@@ -48,7 +48,7 @@ class Main {
 
   /**
      * Set neighborhoods HTML.
-     */
+  */
   fillNeighborhoodsHTML() {
     const select = document.getElementById('neighborhoods-select');
     this.neighborhoods.forEach(neighborhood => {
@@ -60,11 +60,36 @@ class Main {
   }
 
   appendRestaurantImage(restaurant, li) {
-    const image = document.createElement('img');
-    image.className = 'restaurant-img';
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
-    image.alt = `Restaurant: ${restaurant.name}`;
-    li.append(image);
+    const picture = document.createElement('picture');
+    const images = DBHelper.imageUrlForRestaurant(restaurant);
+    const altValue = `Restaurant: ${restaurant.name}`;
+    const sources = this.creatSourcesForPicture(images, altValue);
+    sources.forEach(source => picture.append(source));
+    picture.className = 'lazyload';
+    li.append(picture);
+  }
+
+  creatSourcesForPicture(images, altValue) {
+    return Object.keys(images).map(key => {
+      if (key !== 'jpg') {
+        const source = document.createElement('source');
+        return this.addAttributesToSource(source, images[key], key);
+      } else {
+        const img = document.createElement('img');
+        img.setAttribute('data-src', images[key].url);
+        img.alt = altValue;
+        img.className='restaurant-img lazyload';
+        return img;
+      }
+    });
+  }
+
+  addAttributesToSource(source , picMetadata, key) {
+    source.setAttribute('type', `image/${picMetadata.type}`);
+    source.setAttribute('media', `(min-width:${key.includes('280') ? '280px' : '500px'})`)
+    source.setAttribute('srcset', picMetadata.url);
+    source.className = 'restaurant-img lazyload'
+    return source;
   }
 
   appendRestaurantTitle(restaurant, li) {
@@ -198,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 
 
-window.initMap = () => {
+window.onload = () => {
   let loc = {
     lat: 40.722216,
     lng: -73.987501

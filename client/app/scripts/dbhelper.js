@@ -126,7 +126,28 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/images/${restaurant.photograph}.jpg`);
+    return {
+      '280jpg': {
+        url: `/images/${restaurant.photograph}-280px.jpg`,
+        type: 'jpg'
+      },
+      '280webp': {
+        url: `/images/${restaurant.photograph}-280px.webp`,
+        type: 'webp'
+      },
+      'webp': {
+        url: `/images/${restaurant.photograph}-380px.jpg`,
+        type: 'webp'
+      },
+      'jpg': {
+        url: `/images/${restaurant.photograph}.jpg`,
+        type: 'jpg'
+    }
+    };
+  }
+
+  static addPictureSuffix() {
+
   }
 
   /**

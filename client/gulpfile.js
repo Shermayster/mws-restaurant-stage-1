@@ -96,7 +96,32 @@ gulp.task('images', () => {
       progressive: true,
       interlaced: true
     })))
+    .pipe($.responsive ({
+      '*.jpg': [
+        {
+          width: 280,
+          rename: {
+            suffix: '-280px'
+          }
+        },{
+          width: 280,
+          rename: {
+            suffix: '-280px',
+            extname: '.webp',
+          }
+        },{
+          width: 380,
+        },{
+          width: 380,
+          rename: {
+            suffix: '-380px',
+            extname: '.webp',
+          }
+        }
+      ]
+    }))
     .pipe(gulp.dest('dist/images'))
+    .pipe(gulp.dest('.tmp/images'))
     .pipe($.size({title: 'images'}));
 });
 
@@ -119,7 +144,7 @@ gulp.task('extras', () => {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 gulp.task('serve', () => {
-  runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts'], () => {
+  runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts', 'images'], () => {
     browserSync.init({
       notify: false,
       port: 9000,

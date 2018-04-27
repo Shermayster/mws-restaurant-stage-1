@@ -1,8 +1,8 @@
 importScripts('./scripts/idb.js');
 importScripts('./scripts/utils.js');
 
-var CACHE_VERSION_STATIC = 'static-v15';
-var CACHE_VERSION_DYNAMIC = 'dynamic-v3';
+var CACHE_VERSION_STATIC = 'static-v16';
+const CACHE_VERSION_PICTURE = 'picture-v1';
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -17,6 +17,7 @@ self.addEventListener('install', event => {
           './scripts/idb.js',
           './scripts/main.js',
           './scripts/dbhelper.js',
+          './scripts/lazysizes.min.js',
           './scripts/restaurant_info.js',
           './styles/styles.css',
           './styles/styles-medium.css',
@@ -33,7 +34,7 @@ self.addEventListener('activate', function(event) {
     caches.keys().then(function(keyList) {
       return Promise.all(
         keyList.map(function(key) {
-          if (key !== CACHE_VERSION_STATIC && key !== CACHE_VERSION_DYNAMIC) {
+          if (key !== CACHE_VERSION_STATIC && key !== CACHE_VERSION_PICTURE) {
             console.log('[Service Worker] Removing old cache.', key);
             return caches.delete(key);
           }
@@ -64,9 +65,8 @@ self.addEventListener('fetch', event => {
           } else {
             return fetch(event.request)
               .then(function (res) {
-                return caches.open(CACHE_VERSION_DYNAMIC)
+                return caches.open(CACHE_VERSION_PICTURE)
                   .then(function (cache) {
-                    // trimCache(CACHE_DYNAMIC_NAME, 3);
                     cache.put(event.request.url, res.clone());
                     return res;
                   })
@@ -78,14 +78,3 @@ self.addEventListener('fetch', event => {
     return fetch(event.request).then(res => res);
   }
 });
-
-function isInArray(string, array) {
-  var cachePath;
-  if (string.indexOf(self.origin) === 0) { // request targets domain where we serve the page from (i.e. NOT a CDN)
-    console.log('matched ', string);
-    cachePath = string.substring(self.origin.length); // take the part of the URL AFTER the domain (e.g. after localhost:8080)
-  } else {
-    cachePath = string; // store the full request (for CDNs)
-  }
-  return array.indexOf(cachePath) > -1;
-}
