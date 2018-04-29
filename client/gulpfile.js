@@ -96,7 +96,7 @@ gulp.task('images', () => {
       progressive: true,
       interlaced: true
     })))
-    .pipe($.responsive ({
+    .pipe($.if(/\.jpg$/, $.responsive ({
       '*.jpg': [
         {
           width: 280,
@@ -119,7 +119,7 @@ gulp.task('images', () => {
           }
         }
       ]
-    }))
+    })))
     .pipe(gulp.dest('dist/images'))
     .pipe(gulp.dest('.tmp/images'))
     .pipe($.size({title: 'images'}));

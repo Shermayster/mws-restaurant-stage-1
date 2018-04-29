@@ -16,6 +16,7 @@ self.addEventListener('install', event => {
           './restaurant.html',
           './scripts/idb.js',
           './scripts/main.js',
+          './scripts/utils.js',
           './scripts/dbhelper.js',
           './scripts/lazysizes.min.js',
           './scripts/restaurant_info.js',
@@ -46,35 +47,38 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', event => {
-  if(event.request.url.includes('restaurants')) {
-      event.respondWith(fetch(event.request).then(res => {
-        const clonedRes = res.clone();
-        readAllData('restaurants').then(() => {
-          return clonedRes.json();
-        }).then(data => {
-          writeData('restaurants', data, 'restaurants');
-        })
-        return res;
+  return event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response
+        } else if(event.request.url.includes('restaurants')) {
+          cacheResturants(event);
+        } else if (event.request.url.includes('images')) {
+          cacheImages(event);
+        } else {
+          return fetch(event.request).then(res => res).catch(err => console.log(err))
+        }
       }));
-    } else if (event.request.url.includes('images')) {
-    event.respondWith(
-      caches.match(event.request)
-        .then(function (response) {
-          if (response) {
-            return response;
-          } else {
-            return fetch(event.request)
-              .then(function (res) {
-                return caches.open(CACHE_VERSION_PICTURE)
-                  .then(function (cache) {
-                    cache.put(event.request.url, res.clone());
-                    return res;
-                  })
-              })
-            }
-          })
-        )
-  } else {
-    return fetch(event.request).then(res => res);
-  }
 });
+
+function cacheResturants(event) {
+  return event.respondWith(fetch(event.request).then(res => {
+    const clonedRes = res.clone();
+    readAllData('restaurants').then(() => {
+      return clonedRes.json();
+    }).then(data => {
+      writeData('restaurants', data, 'restaurants');
+    });
+    return res;
+  }));
+}
+
+function cacheImages(event) {
+  return fetch(event.request).then((res) => {
+      return caches.open(CACHE_VERSION_PICTURE).then(function (cache) {
+          cache.put(event.request.url, res.clone());
+          return res;
+        })
+    });
+}
