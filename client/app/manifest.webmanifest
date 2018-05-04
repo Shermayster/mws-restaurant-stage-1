@@ -2,6 +2,7 @@
     "name": "Restaurant Reviews",
     "short_name": "PWAReviews",
     "start_url": "/index.html",
+    "theme_color": "#000",
     "background_color": "#fff",
     "scope": ".",
     "display": "standalone",

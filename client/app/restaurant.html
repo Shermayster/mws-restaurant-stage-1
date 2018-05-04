@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,20 +11,20 @@
   <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
   <!-- Place favicon.ico in the root directory -->
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- endbuild -->
 
-    <!-- build:css styles/main.css -->
+  <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/styles-medium.css">
   <!-- endbuild -->
-   <!-- Manifest file -->
-   <link rel="manifest" href="./manifest.webmanifest">
+  <!-- Manifest file -->
+  <link rel="manifest" href="./manifest.webmanifest">
 
 </head>
-  <!--[if IE]>
+<!--[if IE]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
@@ -31,17 +32,19 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning Title -->
-      <div class="title">
-          <h1>Restaurant Reviews</h1>
-      </div>
+    <div class="title">
+      <h1>Restaurant Reviews</h1>
+    </div>
 
     <!-- Beginning nav -->
     <nav aria-label="Breadcrumb">
-    <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb">
-        <li><a href="/">Home</a></li>
-    </ul>
-    <!-- End breadcrumb -->
+      <!-- Beginning breadcrumb -->
+      <ul id="breadcrumb">
+        <li>
+          <a href="/">Home</a>
+        </li>
+      </ul>
+      <!-- End breadcrumb -->
     </nav>
     <!-- End nav -->
   </header>
@@ -51,13 +54,14 @@
   <main id="restaurant-content" class="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
+      <button class="accordion">SHOW MAP</button>
       <div id="map" role="application"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
-    <section id="restaurant-container">
-      <h2 id="restaurant-name"></h2>
-      <img id="restaurant-img">
+    <section id="restaraunt-name">
+
+
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
@@ -73,7 +77,10 @@
 
   <!-- Beginning footer -->
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    Copyright (c) 2017
+    <a href="/">
+      <strong>Restaurant Reviews</strong>
+    </a> All Rights Reserved.
   </footer>
   <!-- End footer -->
 

@@ -4,13 +4,16 @@
 /**
  * Add service worker to main page
  */
-
+var marked = false;
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').then(() => {
-    console.log('service worker registered!');
-  }).catch(err => {
-    console.log(err);
-  });
+  navigator.serviceWorker
+    .register('./sw.js')
+    .then(() => {
+      console.log('service worker registered!');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 let map;
@@ -24,7 +27,7 @@ class Main {
   }
 
   /**
-     * Set cuisines HTML.
+   * Set cuisines HTML.
    */
   fillCuisinesHTML() {
     const select = document.getElementById('cuisines-select');
@@ -37,18 +40,21 @@ class Main {
   }
 
   /**
-     * Fetch all cuisines and set their HTML.
+   * Fetch all cuisines and set their HTML.
    */
   fetchCuisines() {
-    DBHelper.fetchCuisines().then(cuisines => {
-      this.cuisines = cuisines;
-      this.fillCuisinesHTML();
-    }, error => console.log(error));
+    DBHelper.fetchCuisines().then(
+      cuisines => {
+        this.cuisines = cuisines;
+        this.fillCuisinesHTML();
+      },
+      error => console.log(error)
+    );
   }
 
   /**
-     * Set neighborhoods HTML.
-  */
+   * Set neighborhoods HTML.
+   */
   fillNeighborhoodsHTML() {
     const select = document.getElementById('neighborhoods-select');
     this.neighborhoods.forEach(neighborhood => {
@@ -63,33 +69,10 @@ class Main {
     const picture = document.createElement('picture');
     const images = DBHelper.imageUrlForRestaurant(restaurant);
     const altValue = `Restaurant: ${restaurant.name}`;
-    const sources = this.creatSourcesForPicture(images, altValue);
+    const sources = ImageHelper.creatSourcesForPicture(images, altValue);
     sources.forEach(source => picture.append(source));
     picture.className = 'lazyload';
     li.append(picture);
-  }
-
-  creatSourcesForPicture(images, altValue) {
-    return Object.keys(images).map(key => {
-      if (key !== 'jpg') {
-        const source = document.createElement('source');
-        return this.addAttributesToSource(source, images[key], key);
-      } else {
-        const img = document.createElement('img');
-        img.setAttribute('data-src', images[key].url);
-        img.alt = altValue;
-        img.className='restaurant-img lazyload';
-        return img;
-      }
-    });
-  }
-
-  addAttributesToSource(source , picMetadata, key) {
-    source.setAttribute('type', `image/${picMetadata.type}`);
-    source.setAttribute('media', `(min-width:${key.includes('280') ? '280px' : '500px'})`)
-    source.setAttribute('srcset', picMetadata.url);
-    source.className = 'restaurant-img lazyload'
-    return source;
   }
 
   appendRestaurantTitle(restaurant, li) {
@@ -118,9 +101,12 @@ class Main {
   }
 
   /**
-     * Add markers for current restaurants to the map.
-     */
+   * Add markers for current restaurants to the map.
+   */
   addMarkersToMap() {
+    if (this.getMapDisplayProperty() !== 'block') {
+      return;
+    }
     this.restaurants.forEach(restaurant => {
       // Add marker to the map
       const marker = DBHelper.mapMarkerForRestaurant(restaurant, map);
@@ -129,6 +115,12 @@ class Main {
       });
       this.markers.push(marker);
     });
+    marked = true;
+  }
+
+  getMapDisplayProperty() {
+    const map = document.querySelector('#map');
+    return window.getComputedStyle(map, null).getPropertyValue('display');
   }
 
   appendRestaurantItems(restaurant, li) {
@@ -140,10 +132,10 @@ class Main {
   }
 
   /**
-     * Create restaurant HTML.
-     * @param {*} restaurant object
-     * @return {*} HTML Element
-     */
+   * Create restaurant HTML.
+   * @param {*} restaurant object
+   * @return {*} HTML Element
+   */
   createRestaurantHTML(restaurant) {
     const li = document.createElement('li');
     this.appendRestaurantItems(restaurant, li);
@@ -151,8 +143,8 @@ class Main {
   }
 
   /**
-     * Create all restaurants HTML and add them to the webpage.
-     */
+   * Create all restaurants HTML and add them to the webpage.
+   */
   fillRestaurantsHTML() {
     const ul = document.getElementById('restaurants-list');
     this.restaurants.forEach(restaurant => {
@@ -161,8 +153,8 @@ class Main {
     this.addMarkersToMap();
   }
   /**
-     * Fetch all neighborhoods and set their HTML.
-     */
+   * Fetch all neighborhoods and set their HTML.
+   */
   fetchNeighborhoods() {
     DBHelper.fetchNeighborhoods().then(neighborhoodsList => {
       this.neighborhoods = neighborhoodsList;
@@ -171,9 +163,9 @@ class Main {
   }
 
   /**
-     * @desc Clear current restaurants, their HTML and remove their map markers.
-     * @param {*} restaurantsList todo: add list description
-     */
+   * @desc Clear current restaurants, their HTML and remove their map markers.
+   * @param {*} restaurantsList todo: add list description
+   */
   resetRestaurants(restaurantsList) {
     // Remove all restaurants
     this.restaurants = [];
@@ -187,8 +179,8 @@ class Main {
   }
 
   /**
-     * Update page and map for current restaurants.
-     */
+   * Update page and map for current restaurants.
+   */
   updateRestaurants() {
     const cSelect = document.getElementById('cuisines-select');
     const nSelect = document.getElementById('neighborhoods-select');
@@ -199,16 +191,20 @@ class Main {
     const cuisine = cSelect[cIndex].value;
     const neighborhood = nSelect[nIndex].value;
 
-    DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood)
-      .then(restaurantsList => {
+    DBHelper.fetchRestaurantByCuisineAndNeighborhood(
+      cuisine,
+      neighborhood
+    ).then(
+      restaurantsList => {
         this.resetRestaurants(restaurantsList);
         this.fillRestaurantsHTML();
-      }, error => console.log(error));
+      },
+      error => console.log(error)
+    );
   }
 }
 
 const main = new Main();
-
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -216,12 +212,12 @@ const main = new Main();
 document.addEventListener('DOMContentLoaded', () => {
   main.fetchNeighborhoods();
   main.fetchCuisines();
+  main.updateRestaurants();
 });
 
 /**
  * Initialize Google map, called from HTML.
  */
-
 
 window.onload = () => {
   let loc = {
@@ -243,5 +239,20 @@ window.onload = () => {
       item.setAttribute('tabindex', '-1');
     });
   });
-  main.updateRestaurants();
+  main.addMarkersToMap();
+};
+
+const accBtn = document.querySelector('.accordion');
+accBtn.addEventListener('click', () => {
+  const map = document.querySelector('#map');
+  map.classList.toggle('show');
+  accBtn.classList.toggle('active');
+  accBtn.innerText = getAccordionText(accBtn.innerText);
+  if (!marked) {
+    main.addMarkersToMap();
+  }
+});
+
+function getAccordionText(text) {
+  return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
 }

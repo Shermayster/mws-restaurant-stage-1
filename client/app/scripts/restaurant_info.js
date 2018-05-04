@@ -25,7 +25,7 @@ class RestarauntInfo {
    */
   fetchRestaurantFromURL(callback) {
     if (this.restaurant) {
-    // restaurant already fetched!
+      // restaurant already fetched!
       return new Promise(this.restaurant);
     }
     const id = this.getParameterByName('id');
@@ -51,16 +51,17 @@ class RestarauntInfo {
    * @param {*} restaurant todo add desc
    */
   fillRestaurantHTML(restaurant = this.restaurant) {
-    const name = document.getElementById('restaurant-name');
-    name.innerHTML = restaurant.name;
+    const container = document.querySelector('#restaraunt-name');
+    const restarauntName = document.createElement('h2');
+    restarauntName.setAttribute('id', 'restaurant-name');
+    restarauntName.innerHTML = restaurant.name;
+    container.append(restarauntName);
+
+    this.appendRestaurantImage(restaurant, container);
 
     const address = document.getElementById('restaurant-address');
     address.innerHTML = restaurant.address;
 
-    const image = document.getElementById('restaurant-img');
-    image.className = 'restaurant-img';
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
-    image.alt = `Restaurant: ${restaurant.name}`;
 
     const cuisine = document.getElementById('restaurant-cuisine');
     cuisine.innerHTML = restaurant.cuisine_type;
@@ -71,6 +72,17 @@ class RestarauntInfo {
     }
     // fill reviews
     this.fillReviewsHTML();
+  }
+
+  appendRestaurantImage(restaurant, elem) {
+    const picture = document.createElement('picture');
+    picture.setAttribute('id', 'restaurant-img');
+    const images = DBHelper.imageUrlForRestaurant(restaurant);
+    const altValue = `Restaurant: ${restaurant.name}`;
+    const sources = ImageHelper.creatSourcesForPicture(images, altValue);
+    sources.forEach(source => picture.append(source));
+    picture.className = 'lazyload';
+    elem.append(picture);
   }
 
   /**
@@ -157,9 +169,9 @@ class RestarauntInfo {
   }
 
   /**
-  * Add restaurant name to the breadcrumb navigation menu
-  * @param {*} restaurant todo add desc
-  */
+   * Add restaurant name to the breadcrumb navigation menu
+   * @param {*} restaurant todo add desc
+   */
   fillBreadcrumb(restaurant = this.restaurant) {
     const breadcrumb = document.getElementById('breadcrumb');
     const li = document.createElement('li');
@@ -198,8 +210,8 @@ const restarauntInfo = new RestarauntInfo();
  */
 window.initMap = () => {
   restarauntInfo.fetchRestaurantFromURL()
-  .then(restaurant  => {
-    const map = new google.maps.Map(document.getElementById('map'), {
+    .then(restaurant => {
+      const map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false
@@ -208,3 +220,18 @@ window.initMap = () => {
       DBHelper.mapMarkerForRestaurant(restarauntInfo.restaurant, map);
     });
 };
+
+const accBtn = document.querySelector('.accordion');
+accBtn.addEventListener('click', () => {
+  const map = document.querySelector('#map');
+  map.classList.toggle('show');
+  accBtn.classList.toggle('active');
+  accBtn.innerText = getAccordionText(accBtn.innerText);
+  if (!marked) {
+    main.addMarkersToMap();
+  }
+});
+
+function getAccordionText(text) {
+  return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
+}

@@ -1,82 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="theme-color" content="#000"/>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Reviews</title>
 
-    <!-- Place favicon.ico in the root directory -->
+<head>
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#000" />
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Reviews</title>
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
+  <!-- Place favicon.ico in the root directory -->
 
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
-    <link rel="stylesheet" href="styles/styles.css">
-    <link rel="stylesheet" href="styles/styles-medium.css">
-    <!-- endbuild -->
-    <link rel="manifest" href="./manifest.webmanifest">
-  </head>
-  <body>
-    <!--[if IE]>
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/styles-medium.css">
+  <!-- endbuild -->
+  <link rel="manifest" href="./manifest.webmanifest">
+</head>
+
+<body>
+  <!--[if IE]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <body>
-      <header>
-        <div class="title">
-          <h1>Restaurant Reviews</h1>
+  <body>
+    <header>
+      <div class="title">
+        <h1>Restaurant Reviews</h1>
+      </div>
+    </header>
+
+    <main class="maincontent">
+      <section id="map-container" tabindex="-1">
+        <button class="accordion">SHOW MAP</button>
+        <div id="map" tabindex="-1" role="application"></div>
+      </section>
+      <section>
+        <div class="filter-options">
+          <h2 class="uppercase">Filter Results</h2>
+          <select aria-label="Select Neighborhoods" id="neighborhoods-select" name="neighborhoods" onchange="main.updateRestaurants()">
+            <option value="all">All Neighborhoods</option>
+          </select>
+          <select aria-label="Select Cuisines" id="cuisines-select" name="cuisines" onchange="main.updateRestaurants()">
+            <option value="all">All Cuisines</option>
+          </select>
         </div>
-      </header>
-
-      <main class="maincontent">
-        <section id="map-container" tabindex="-1">
-          <div id="map" tabindex="-1" role="application"></div>
-        </section>
-        <section>
-          <div class="filter-options">
-            <h2 class="uppercase">Filter Results</h2>
-            <select aria-label="Select Neighborhoods"
-              id="neighborhoods-select" name="neighborhoods" onchange="main.updateRestaurants()">
-              <option value="all">All Neighborhoods</option>
-            </select>
-            <select aria-label="Select Cuisines"
-              id="cuisines-select" name="cuisines"
-              onchange="main.updateRestaurants()">
-              <option value="all">All Cuisines</option>
-            </select>
-          </div>
-          <ul id="restaurants-list" class="list"></ul>
-        </section>
-      </main>
+        <ul id="restaurants-list" class="list"></ul>
+      </section>
+    </main>
 
 
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTTZOCiF4Et51Q4h481ThDlGZc4J_NMBc&libraries=places"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTTZOCiF4Et51Q4h481ThDlGZc4J_NMBc&libraries=places"></script>
 
 
-      <footer id="footer">
-        Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
-      </footer>
+    <footer id="footer">
+      Copyright (c) 2017
+      <a href="/">
+        <strong>Restaurant Reviews</strong>
+      </a> All Rights Reserved.
+    </footer>
 
-    </body>
-
-
-
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- build:js scripts/main.js -->
-    <script type="application/javascript" charset="utf-8" src="scripts/lazysizes.min.js" async></script>
-    <script type="application/javascript" charset="utf-8" src="scripts/idb.js"></script>
-    <script type="application/javascript" charset="utf-8" src="scripts/utils.js"></script>
-    <script type="application/javascript" charset="utf-8" src="scripts/dbhelper.js"></script>
-    <script type="application/javascript" charset="utf-8" src="scripts/main.js"></script>
-    <!-- endbuild -->
   </body>
+
+
+
+  <!-- build:js scripts/vendor.js -->
+  <!-- bower:js -->
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js scripts/main.js -->
+  <script type="application/javascript" charset="utf-8" src="scripts/lazysizes.min.js" async></script>
+  <script type="application/javascript" charset="utf-8" src="scripts/idb.js"></script>
+  <script type="application/javascript" charset="utf-8" src="scripts/utils.js"></script>
+  <script type="application/javascript" charset="utf-8" src="scripts/dbhelper.js"></script>
+  <script type="application/javascript" charset="utf-8" src="scripts/main.js"></script>
+  <!-- endbuild -->
+</body>
+
 </html>
