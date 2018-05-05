@@ -3,6 +3,8 @@
 /**
  * Add service worker to restaraunt info page
  */
+var online = navigator.onLine;
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./sw.js')
@@ -13,6 +15,8 @@ if ('serviceWorker' in navigator) {
       console.log(err);
     });
 }
+
+
 
 class RestarauntInfo {
   constructor() {
@@ -52,12 +56,15 @@ class RestarauntInfo {
    */
   fillRestaurantHTML(restaurant = this.restaurant) {
     const container = document.querySelector('#restaraunt-name');
+
     const restarauntName = document.createElement('h2');
     restarauntName.setAttribute('id', 'restaurant-name');
     restarauntName.innerHTML = restaurant.name;
-    container.append(restarauntName);
+    const picture = this.appendRestaurantImage(restaurant);
 
-    this.appendRestaurantImage(restaurant, container);
+    container.insertAdjacentElement('afterbegin', picture);
+    container.insertAdjacentElement('afterbegin', restarauntName);
+
 
     const address = document.getElementById('restaurant-address');
     address.innerHTML = restaurant.address;
@@ -74,7 +81,7 @@ class RestarauntInfo {
     this.fillReviewsHTML();
   }
 
-  appendRestaurantImage(restaurant, elem) {
+  appendRestaurantImage(restaurant) {
     const picture = document.createElement('picture');
     picture.setAttribute('id', 'restaurant-img');
     const images = DBHelper.imageUrlForRestaurant(restaurant);
@@ -82,7 +89,7 @@ class RestarauntInfo {
     const sources = ImageHelper.creatSourcesForPicture(images, altValue);
     sources.forEach(source => picture.append(source));
     picture.className = 'lazyload';
-    elem.append(picture);
+    return picture;
   }
 
   /**
@@ -222,15 +229,17 @@ window.initMap = () => {
 };
 
 const accBtn = document.querySelector('.accordion');
-accBtn.addEventListener('click', () => {
-  const map = document.querySelector('#map');
-  map.classList.toggle('show');
-  accBtn.classList.toggle('active');
-  accBtn.innerText = getAccordionText(accBtn.innerText);
-  if (!marked) {
-    main.addMarkersToMap();
-  }
-});
+if (online) {
+  accBtn.addEventListener('click', () => {
+    const map = document.querySelector('#map');
+    map.classList.toggle('show');
+    accBtn.classList.toggle('active');
+    accBtn.innerText = getAccordionText(accBtn.innerText);
+  });
+} else {
+  accBtn.style.display = 'none';
+}
+
 
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';

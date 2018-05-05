@@ -4,6 +4,7 @@
 /**
  * Add service worker to main page
  */
+var online = navigator.onLine;
 var marked = false;
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -243,15 +244,20 @@ window.onload = () => {
 };
 
 const accBtn = document.querySelector('.accordion');
-accBtn.addEventListener('click', () => {
-  const map = document.querySelector('#map');
-  map.classList.toggle('show');
-  accBtn.classList.toggle('active');
-  accBtn.innerText = getAccordionText(accBtn.innerText);
-  if (!marked) {
-    main.addMarkersToMap();
-  }
-});
+if (online) {
+  accBtn.addEventListener('click', () => {
+    const map = document.querySelector('#map');
+    map.classList.toggle('show');
+    accBtn.classList.toggle('active');
+    accBtn.innerText = getAccordionText(accBtn.innerText);
+    if (!marked) {
+      main.addMarkersToMap();
+    }
+  });
+} else {
+  accBtn.style.display = 'none';
+}
+
 
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';

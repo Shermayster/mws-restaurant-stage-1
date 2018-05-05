@@ -10,14 +10,12 @@
     flex-direction: row;
     justify-content: center;
   }
-
   #map {
     display: block;
   }
   .accordion {
     display: none;
   }
-
   /* ====================== Restaurant Details ====================== */
   #restaurant-content {
     grid-gap: 0;
@@ -42,7 +40,7 @@
     width: 100%;
     border-top: none;
   }
-  #restaurant-img {
+  #restaurant-img .restaurant-img {
     width: 100%;
   }
   #restaurant-hours {

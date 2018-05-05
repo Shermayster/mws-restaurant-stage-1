@@ -17,12 +17,6 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-    // if('indexedDB' in window) {
-    //   const data = readData('restaurants');
-    //   return data ? data : DBHelper._fetchRestaurants();
-    // } else {
-    //  return DBHelper._fetchRestaurants;
-    // }
     return readData('restaurants').then(res => {
       return res ? res : DBHelper._fetchRestaurants();
     })
