@@ -1,4 +1,4 @@
-# Udacity's "Mobile Web Specialist Restaurant Reviews App
+# Udacity's "Mobile Web Specialist Restaurant Reviews App"
 
 The app was created from yoman web app starter
 
