@@ -1,6 +1,7 @@
 /**
  * Common database helper functions.
  */
+'use strict'
 var networkDataReceived = false;
 class DBHelper {
   /**

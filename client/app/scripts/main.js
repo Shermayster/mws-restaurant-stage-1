@@ -1,5 +1,6 @@
 /* eslint-env browser*/
 /* global  DBHelper, google*/
+'use strict'
 
 /**
  * Add service worker to main page

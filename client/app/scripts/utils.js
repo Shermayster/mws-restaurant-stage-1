@@ -1,3 +1,4 @@
+'use strict'
 var dbPromise = idb.open('restaurants-store', 1, db => {
   if (!db.objectStoreNames.contains('restaurants')) {
     db.createObjectStore('restaurants')

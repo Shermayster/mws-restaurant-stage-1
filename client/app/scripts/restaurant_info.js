@@ -1,5 +1,5 @@
 /* eslint-env browser */
-
+'use strict'
 /**
  * Add service worker to restaraunt info page
  */
