@@ -1,10 +1,12 @@
-'use strict'
+
+import idb from 'idb';
 var dbPromise = idb.open('restaurants-store', 1, db => {
   if (!db.objectStoreNames.contains('restaurants')) {
     db.createObjectStore('restaurants')
   }
 });
 
+// const db = new Dexie('restaurants');
 /**
  * Writes data to indexdb
  * @param {string} st
@@ -45,7 +47,7 @@ function readAllData(st) {
   })
 }
 
-class ImageHelper {
+export class ImageHelper {
   static creatSourcesForPicture(images, altValue) {
     return Object.keys(images).map(key => {
       if (key !== 'jpg') {

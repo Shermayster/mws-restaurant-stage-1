@@ -1,9 +1,9 @@
 /**
  * Common database helper functions.
  */
-'use strict'
+
 var networkDataReceived = false;
-class DBHelper {
+export class DBHelper {
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -29,7 +29,7 @@ class DBHelper {
    * @param {number} id todo: add description
    * @param {any} callback todo: add description
    */
-  static fetchRestaurantById(id, callback) {
+  static fetchRestaurantById(id, callback?) {
     // fetch all restaurants with proper error handling.
     return DBHelper.fetchRestaurants().then(restaurants => {
         const restaurant = restaurants.find(r => r.id == id);
@@ -68,7 +68,7 @@ class DBHelper {
   /**
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
    */
-  static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
+  static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback?) {
     // Fetch all restaurants
     return DBHelper.fetchRestaurants().then(restaurants => {
       let results = restaurants;
@@ -99,7 +99,7 @@ class DBHelper {
   /**
    * Fetch all cuisines with proper error handling.
    */
-  static fetchCuisines(callback) {
+  static fetchCuisines(callback?) {
     // Fetch all restaurants
     return DBHelper.fetchRestaurants().then(restaurants => {
       // Get all cuisines from all restaurants

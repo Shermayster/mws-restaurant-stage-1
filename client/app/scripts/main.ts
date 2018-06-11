@@ -1,32 +1,28 @@
 /* eslint-env browser*/
 /* global  DBHelper, google*/
-'use strict'
-
-/**
- * Add service worker to main page
- */
+import { DBHelper } from './dbhelper';
+import { ImageHelper } from './utils';
 var online = navigator.onLine;
 var marked = false;
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('./sw.js')
-    .then(() => {
-      console.log('service worker registered!');
-    })
-    .catch(err => {
-      console.log(err);
-    });
-}
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker
+//     .register('./sw.js')
+//     .then(() => {
+//       console.log('service worker registered!');
+//     })
+//     .catch(err => {
+//       console.log(err);
+//     });
+// }
 
 let map;
 
-class Main {
-  constructor() {
-    this.restaurants = null;
-    this.neighborhoods = null;
-    this.cuisines = null;
-    this.markers = [];
-  }
+export class Main {
+  restaurants = null;
+  neighborhoods = null;
+  cuisines = null;
+  markers = [];
+  constructor() {}
 
   /**
    * Set cuisines HTML.
@@ -216,6 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
   main.fetchCuisines();
   main.updateRestaurants();
 });
+
+
 
 /**
  * Initialize Google map, called from HTML.

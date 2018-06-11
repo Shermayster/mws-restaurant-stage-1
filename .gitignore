@@ -108,3 +108,4 @@ server/.netbeans
 server/nbproject
 server/.idea
 server/.node_history
+client/app/.cache

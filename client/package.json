@@ -31,6 +31,7 @@
     "gulp-uglify": "^3.0.0",
     "gulp-useref": "^3.1.5",
     "main-bower-files": "^2.5.0",
+    "node-sass": "^4.9.0",
     "run-sequence": "^1.2.2",
     "wiredep": "^4.0.0"
   },
@@ -46,5 +47,9 @@
         "single"
       ]
     }
+  },
+  "dependencies": {
+    "dexie": "^2.0.4",
+    "idb": "^2.1.2"
   }
 }

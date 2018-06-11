@@ -1,9 +1,9 @@
 /* eslint-env browser */
-'use strict'
+import { DBHelper } from './dbhelper';
 /**
  * Add service worker to restaraunt info page
  */
-var online = navigator.onLine;
+const online = navigator.onLine;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -19,8 +19,8 @@ if ('serviceWorker' in navigator) {
 
 
 class RestarauntInfo {
+  restaurant = null;
   constructor() {
-    this.restaurant = null;
   }
 
   /**
@@ -193,7 +193,7 @@ class RestarauntInfo {
    * @param {*} url todo add desc
    * @return {*} todo add return
    */
-  getParameterByName(name, url) {
+  getParameterByName(name, url?) {
     if (!url) {
       url = window.location.href;
     }
