@@ -259,6 +259,20 @@ if (online) {
   accBtn.style.display = 'none';
 }
 
+// add markers on screen rotate
+window.addEventListener('deviceorientation', () => {
+  const screenWidth = getScreenWidth();
+  if (screenWidth > 699) {
+    main.addMarkersToMap();
+  }
+})
+
+function getScreenWidth() {
+  return window.innerWidth
+  || document.documentElement.clientWidth
+  || document.body.clientWidth;
+}
+
 
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';

@@ -121,7 +121,7 @@ gulp.task('images', () => {
           suffix: '-280px',
           extname: '.webp',
         }
-      }, {}, {
+      }, {
         rename: {
           suffix: '-380px',
           extname: '.webp',

@@ -124,18 +124,91 @@ class RestarauntInfo {
     const title = document.createElement('h3');
     title.innerHTML = 'Reviews';
     container.appendChild(title);
+    // this.appendAddReviewSection(container);
+    reviews ? this.appendReviewsList(container) : this.appendNoReviews(container);
+  }
 
-    if (!reviews) {
-      const noReviews = document.createElement('p');
-      noReviews.innerHTML = 'No reviews yet!';
-      container.appendChild(noReviews);
-      return;
-    }
+  appendNoReviews(container) {
+    const noReviews = document.createElement('p');
+    noReviews.classList = ['no-review-message'];
+    noReviews.innerHTML = 'No reviews yet!';
+    container.appendChild(noReviews);
+  }
+
+  appendReviewsList(container) {
     const ul = document.getElementById('reviews-list');
     reviews.forEach(review => {
       ul.appendChild(this.createReviewHTML(review));
     });
     container.appendChild(ul);
+  }
+
+  appendAddReviewSection(container) {
+    const addReviewSection = document.createElement('section');
+    addReviewSection.classList = ['add-review-section'];
+    this.appendControlsToSection(addReviewSection);
+    container.appendChild(addReviewSection);
+  }
+
+  appendControlsToSection(addReviewSection) {
+    const nameInputSeciton = document.createElement('div');
+    nameInputSeciton.classList = ['form-group'];
+    nameInputSeciton.appendChild(this.createNameLabel());
+    nameInputSeciton.appendChild(this.createNameInput());
+    const reviewSection = document.createElement('div');
+    reviewSection.classList = ['form-group'];
+    reviewSection.appendChild(this.createReviewLabel());
+    reviewSection.appendChild(this.createReviewInput());
+    const addReviewBtn = this.createReviewBtn();
+    const submitBtn = this.createReviewBtn();
+    const cancelBtn = this.createCancelBtn();
+    addReviewSection.appendChild(nameLabel);
+    addReviewSection.appendChild(nameInput);
+    addReviewSection.appendChild(reviewLabel);
+    addReviewSection.appendChild(reviewInput);
+    addReviewSection.appendChild(cancelBtn);
+    addReviewSection.appendChild(submitBtn);
+  }
+
+  createNameLabel() {
+    const nameLabel = document.createElement('label');
+    nameLabel.setAttribute('for', 'name-input');
+    nameLabel.innerText = 'Your Name';
+    return nameLabel;
+  }
+
+  createNameInput() {
+    const nameInput = document.createElement('input');
+    nameInput.setAttribute('type', 'text');
+    nameInput.setAttribute('id', 'name-input');
+    return nameInput;
+  }
+
+  createReviewLabel() {
+    const reviewLabel = document.createElement('label');
+    reviewLabel.setAttribute('for', 'review-rating');
+    reviewLabel.innerText = 'Review';
+    return reviewLabel;
+  }
+
+  createReviewInput() {
+    const reviewInput = document.createElement('textarea');
+    reviewInput.setAttribute('id', 'review-rating');
+    return reviewInput;
+  }
+
+  createReviewBtn() {
+    const createReviewBtn = document.createElement('button');
+    createReviewBtn.classList = ['submit-review'];
+    createReviewBtn.innerText = 'Add Review';
+    return createReviewBtn;
+  }
+
+  createCancelBtn() {
+    const cancelBtn = document.createElement('button');
+    cancelBtn.classList = ['cancel-review'];
+    cancelBtn.innerText = 'Cancel';
+    return cancelBtn;
   }
 
   /**
@@ -165,7 +238,7 @@ class RestarauntInfo {
 
     const rating = document.createElement('p');
     rating.innerHTML = `Rating: ${review.rating}`;
-    rating.className = 'review-raiting uppercase';
+    rating.className = 'review-rating uppercase';
     reviewContent.appendChild(rating);
 
     const comments = document.createElement('p');
@@ -241,6 +314,13 @@ if (online) {
 }
 
 
+
+function setRating(index) {
+const radioButtons = document.querySelectorAll('.form-group .rating-label');
+  radioButtons.forEach((button, i) => {
+    button.innerText =  i > index ? '☆' : '★';
+  })
+}
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
 }

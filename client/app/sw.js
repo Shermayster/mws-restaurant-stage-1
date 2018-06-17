@@ -80,7 +80,6 @@ function serveResturants(event) {
 
 function serveImages(request) {
   var storageUrl = request.url.replace(/(-\d+px\.(jpg|webp)|.jpg)$/, '');
-
   return caches.open(CACHE_VERSION_PICTURE).then(function (cache) {
     return cache.match(storageUrl).then(function (response) {
       //serve form cache
