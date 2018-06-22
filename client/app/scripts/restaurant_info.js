@@ -5,6 +5,8 @@
  */
 var online = navigator.onLine;
 
+var ratingValue;
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./sw.js')
@@ -319,8 +321,38 @@ function setRating(index) {
 const radioButtons = document.querySelectorAll('.form-group .rating-label');
   radioButtons.forEach((button, i) => {
     button.innerText =  i > index ? '☆' : '★';
-  })
+  });
+  ratingValue = index;
 }
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
 }
+
+function toggleFormView() {
+  const form = document.querySelector('.add-review form');
+  form.style.display = form.style.display ? 
+  form.style.display === 'none' ? 'block' : 'none'
+  : 'block'
+}
+
+function submitForm() {
+  const formValues = getFormData();
+  const id = restarauntInfo.getParameterByName('id');
+  DBHelper.addReview(id, formValues).then((res) =>  console.log('res', res))
+}
+
+function resetForm() {
+  toggleFormView();
+}
+
+const getFormData = () => {
+  return  {
+    name: getNameValue(),
+    rating: ratingValue,
+    comments: getCommentsValue()
+  }
+}
+
+const getNameValue = () => document.querySelector('#name-input').value;
+const getCommentsValue = () => document.querySelector('#review-input').value;
+

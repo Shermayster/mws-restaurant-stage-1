@@ -67,8 +67,8 @@
     <!-- end restaurant -->
     <!-- begin rating -->
     <section class="add-review">
-      <button>Add Review</button>
-      <form>
+      <button onclick="toggleFormView()">Add Review</button>
+      <form onreset="resetForm()">
         <div class="form-group">
           <label for="name-input">
             Your Name
@@ -77,23 +77,27 @@
         </div>
         <div class="form-group">
           <label for="review-input">Your Review</label>
-          <input type="text" id="review-input">
+          <textarea id="review-input">
+
+          </textarea>
         </div>
         <div class="form-group">
           <p>Your rating</p>
-          <label class="rating-label" for="rating-input1">☆</label>
-          <input onclick="setRating(0)" name="rating" type="radio" id="rating-input1">
-          <label class="rating-label" for="rating-input2">☆</label>
-          <input onclick="setRating(1)" name="rating" type="radio" id="rating-input2">
-          <label class="rating-label" for="rating-input3">☆</label>
-          <input onclick="setRating(2)" name="rating" type="radio" id="rating-input3">
-          <label class="rating-label" for="rating-input3">☆</label>
-          <input onclick="setRating(3)" name="rating" type="radio" id="rating-input4">
-          <label class="rating-label" for="rating-input5">☆</label>
-          <input onclick="setRating(4)" name="rating" type="radio" id="rating-input5">
+          <div class="rating-group">
+            <label class="rating-label" for="rating-input1">☆</label>
+            <input onclick="setRating(0)" name="rating" type="radio" id="rating-input1">
+            <label class="rating-label" for="rating-input2">☆</label>
+            <input onclick="setRating(1)" name="rating" type="radio" id="rating-input2">
+            <label class="rating-label" for="rating-input3">☆</label>
+            <input onclick="setRating(2)" name="rating" type="radio" id="rating-input3">
+            <label class="rating-label" for="rating-input3">☆</label>
+            <input onclick="setRating(3)" name="rating" type="radio" id="rating-input4">
+            <label class="rating-label" for="rating-input5">☆</label>
+            <input onclick="setRating(4)" name="rating" type="radio" id="rating-input5">
+          </div>
         </div>
         <div class='submit'>
-          <button type="submit">Ok</button>
+          <button onclick="submitForm()" type="button">Ok</butto>
           <button type="reset">Cancel</button>
         </div>
       </form>

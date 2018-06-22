@@ -4,14 +4,21 @@
 'use strict'
 var networkDataReceived = false;
 class DBHelper {
+
+  static get DATABASE_PORT() {
+    return 1337;
+  }
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
-  static get DATABASE_URL() {
+  static get DATABASE_URL_GET() {
     // Change this to your server port
-    const port = 1337;
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${DBHelper.DATABASE_PORT}/restaurants`;
+  }
+
+  static get DATABASE_URL_ADD() {
+    return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/`
   }
 
   /**
@@ -22,6 +29,17 @@ class DBHelper {
       return res ? res : DBHelper._fetchRestaurants();
     })
   }
+
+  /**
+   * Add review to a restaurant
+   */
+
+   static addReview(restaurantId, data) {
+     return fetch(DBHelper.DATABASE_URL_ADD + restaurantId, {
+       method: 'PUT',
+       body: JSON.stringify(data)
+     }).then(res => res.json());
+   }
 
   /**
    *
@@ -141,9 +159,6 @@ class DBHelper {
     };
   }
 
-  static addPictureSuffix() {
-
-  }
 
   /**
    * Map marker for a restaurant.
@@ -159,8 +174,11 @@ class DBHelper {
     return marker;
   }
 
+  /**
+   * Fetch restaurant data
+   */
   static _fetchRestaurants() {
-    return fetch(DBHelper.DATABASE_URL)
+    return fetch(DBHelper.DATABASE_URL_GET)
     .then(res => res.json())
     .catch(error => console.log(error));
   }
