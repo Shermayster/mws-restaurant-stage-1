@@ -20,6 +20,17 @@ class DBHelper {
   static get DATABASE_URL_ADD() {
     return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/`
   }
+  /**
+   * Get all reviews for a restaurant
+   * http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
+   */
+  static get DATABASE_URL_GET_REVIEWS() {
+    return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/?restaurant_id=`
+  }
+
+  static get DATABASE_URL_DELETE_REVIEW() {
+    return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/`
+  }
 
   /**
    * Fetch all restaurants.
@@ -33,14 +44,22 @@ class DBHelper {
   /**
    * Add review to a restaurant
    */
-
-   static addReview(restaurantId, data) {
-     return fetch(DBHelper.DATABASE_URL_ADD + restaurantId, {
-       method: 'PUT',
+   static addReview(data) {
+     return fetch(DBHelper.DATABASE_URL_ADD, {
+       method: 'POST',
        body: JSON.stringify(data)
-     }).then(res => res.json());
+     })
+     .then(res => res.json())
+     .catch(error => console.log(error))
    }
 
+   static deleteReview(review_id) {
+     return fetch(DBHelper.DATABASE_URL_DELETE_REVIEW+review_id, {
+       method: 'DELETE'
+     })
+     .then(res => res.json())
+     .catch(error => console.log(error));
+   }
   /**
    *
    * Fetch a restaurant by its ID.
@@ -174,6 +193,14 @@ class DBHelper {
     return marker;
   }
 
+  /**
+   * get restaurant review
+   */
+  static gerRestaurantReviews(restaurantId) {
+    return fetch(DBHelper.DATABASE_URL_GET_REVIEWS+restaurantId)
+    .then(res => res.json())
+    .catch(error => console.log(error));
+  }
   /**
    * Fetch restaurant data
    */

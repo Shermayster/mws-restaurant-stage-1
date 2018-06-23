@@ -43,9 +43,10 @@ class RestarauntInfo {
       return DBHelper.fetchRestaurantById(id).then(restaurant => {
         this.restaurant = restaurant;
         if (!restaurant) {
-          console.error('resturant not found');
+          console.error('restaurant not found');
           return;
         }
+
         this.fillRestaurantHTML();
         return restaurant;
       });
@@ -67,10 +68,8 @@ class RestarauntInfo {
     container.insertAdjacentElement('afterbegin', picture);
     container.insertAdjacentElement('afterbegin', restarauntName);
 
-
     const address = document.getElementById('restaurant-address');
     address.innerHTML = restaurant.address;
-
 
     const cuisine = document.getElementById('restaurant-cuisine');
     cuisine.innerHTML = restaurant.cuisine_type;
@@ -79,8 +78,14 @@ class RestarauntInfo {
     if (restaurant.operating_hours) {
       this.fillRestaurantHoursHTML();
     }
-    // fill reviews
-    this.fillReviewsHTML();
+  
+  }
+
+  initReviews() {
+    const id = this.getParameterByName('id');
+    DBHelper.gerRestaurantReviews(id).then(res => {
+      this.fillReviewsHTML(res);
+    })
   }
 
   appendRestaurantImage(restaurant) {
@@ -107,11 +112,9 @@ class RestarauntInfo {
         const day = document.createElement('td');
         day.innerHTML = key;
         row.appendChild(day);
-
         const time = document.createElement('td');
         time.innerHTML = operatingHours[key];
         row.appendChild(time);
-
         hours.appendChild(row);
       }
     }
@@ -121,13 +124,12 @@ class RestarauntInfo {
    * Create all reviews HTML and add them to the webpage.
    * @param {*} reviews todo add desc
    */
-  fillReviewsHTML(reviews = this.restaurant.reviews) {
+  fillReviewsHTML(reviews = []) {
     const container = document.getElementById('reviews-container');
     const title = document.createElement('h3');
     title.innerHTML = 'Reviews';
     container.appendChild(title);
-    // this.appendAddReviewSection(container);
-    reviews ? this.appendReviewsList(container) : this.appendNoReviews(container);
+    reviews.length ? this.appendReviewsList(container, reviews) : this.appendNoReviews(container);
   }
 
   appendNoReviews(container) {
@@ -137,80 +139,12 @@ class RestarauntInfo {
     container.appendChild(noReviews);
   }
 
-  appendReviewsList(container) {
+  appendReviewsList(container, reviews) {
     const ul = document.getElementById('reviews-list');
     reviews.forEach(review => {
       ul.appendChild(this.createReviewHTML(review));
     });
     container.appendChild(ul);
-  }
-
-  appendAddReviewSection(container) {
-    const addReviewSection = document.createElement('section');
-    addReviewSection.classList = ['add-review-section'];
-    this.appendControlsToSection(addReviewSection);
-    container.appendChild(addReviewSection);
-  }
-
-  appendControlsToSection(addReviewSection) {
-    const nameInputSeciton = document.createElement('div');
-    nameInputSeciton.classList = ['form-group'];
-    nameInputSeciton.appendChild(this.createNameLabel());
-    nameInputSeciton.appendChild(this.createNameInput());
-    const reviewSection = document.createElement('div');
-    reviewSection.classList = ['form-group'];
-    reviewSection.appendChild(this.createReviewLabel());
-    reviewSection.appendChild(this.createReviewInput());
-    const addReviewBtn = this.createReviewBtn();
-    const submitBtn = this.createReviewBtn();
-    const cancelBtn = this.createCancelBtn();
-    addReviewSection.appendChild(nameLabel);
-    addReviewSection.appendChild(nameInput);
-    addReviewSection.appendChild(reviewLabel);
-    addReviewSection.appendChild(reviewInput);
-    addReviewSection.appendChild(cancelBtn);
-    addReviewSection.appendChild(submitBtn);
-  }
-
-  createNameLabel() {
-    const nameLabel = document.createElement('label');
-    nameLabel.setAttribute('for', 'name-input');
-    nameLabel.innerText = 'Your Name';
-    return nameLabel;
-  }
-
-  createNameInput() {
-    const nameInput = document.createElement('input');
-    nameInput.setAttribute('type', 'text');
-    nameInput.setAttribute('id', 'name-input');
-    return nameInput;
-  }
-
-  createReviewLabel() {
-    const reviewLabel = document.createElement('label');
-    reviewLabel.setAttribute('for', 'review-rating');
-    reviewLabel.innerText = 'Review';
-    return reviewLabel;
-  }
-
-  createReviewInput() {
-    const reviewInput = document.createElement('textarea');
-    reviewInput.setAttribute('id', 'review-rating');
-    return reviewInput;
-  }
-
-  createReviewBtn() {
-    const createReviewBtn = document.createElement('button');
-    createReviewBtn.classList = ['submit-review'];
-    createReviewBtn.innerText = 'Add Review';
-    return createReviewBtn;
-  }
-
-  createCancelBtn() {
-    const cancelBtn = document.createElement('button');
-    cancelBtn.classList = ['cancel-review'];
-    cancelBtn.innerText = 'Cancel';
-    return cancelBtn;
   }
 
   /**
@@ -220,6 +154,7 @@ class RestarauntInfo {
    */
   createReviewHTML(review) {
     const li = document.createElement('li');
+    li.setAttribute('id', review.id);
     const reviewTitle = document.createElement('div');
     reviewTitle.className = 'review-title review-details';
     li.appendChild(reviewTitle);
@@ -229,10 +164,36 @@ class RestarauntInfo {
     name.className = 'reviewer-name';
     reviewTitle.appendChild(name);
 
-    const date = document.createElement('p');
-    date.innerHTML = review.date;
-    date.className = 'review-date';
-    reviewTitle.appendChild(date);
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList = ['delete-btn'];
+    deleteBtn.onclick = () => deleteReview(review);
+    const deleteText = document.createElement('span');
+    deleteText.innerText = 'Delete';
+    deleteBtn.appendChild(deleteText);
+    const xmlns = 'http://www.w3.org/2000/svg';
+    const deleteSVG = document.createElementNS(xmlns, 'svg');
+    deleteSVG.setAttributeNS(null, 'width', 20);
+    deleteSVG.setAttributeNS(null, 'height', 20);
+    deleteSVG.setAttributeNS(null, 'viewBox', '0 0 24 24');
+    deleteSVG.setAttributeNS(null, 'fill', 'white');
+    const deleteSVGPath = document.createElementNS(xmlns, 'path');
+    deleteSVGPath.setAttributeNS(null, 'd', 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z');
+    const deleteSVGPath1 = document.createElementNS(xmlns, 'path');
+    deleteSVGPath1.setAttributeNS(null, 'd', 'M0 0h24v24H0z');
+    deleteSVGPath1.setAttributeNS(null, 'fill', 'none');
+    const deleteSVGDesc = document.createElementNS(xmlns, 'desc');
+    deleteSVGDesc.innerHTML = 'Delete review';
+    deleteSVG.appendChild(deleteSVGDesc);
+    deleteSVG.appendChild(deleteSVGPath);
+    deleteSVG.appendChild(deleteSVGPath1);
+
+  
+    
+
+
+
+    deleteBtn.appendChild(deleteSVG);
+    reviewTitle.appendChild(deleteBtn);
 
     const reviewContent = document.createElement('div');
     reviewContent.className = 'review-content review-details';
@@ -286,7 +247,7 @@ class RestarauntInfo {
 }
 
 const restarauntInfo = new RestarauntInfo();
-
+restarauntInfo.initReviews();
 /**
  * Initialize Google map, called from HTML.
  */
@@ -338,11 +299,25 @@ function toggleFormView() {
 function submitForm() {
   const formValues = getFormData();
   const id = restarauntInfo.getParameterByName('id');
-  DBHelper.addReview(id, formValues).then((res) =>  console.log('res', res))
+  const data = Object.assign({}, {restaurant_id: id}, formValues);
+  DBHelper.addReview(data).then((res) =>  {
+    console.log('res', res);
+    const ul = document.getElementById('reviews-list');
+    ul.appendChild(restarauntInfo.createReviewHTML(res));
+    const form = document.querySelector('.add-review form');
+    form.reset();
+  })
 }
 
 function resetForm() {
   toggleFormView();
+}
+
+function deleteReview(review) {
+  DBHelper.deleteReview(review.id)
+  .then(res => {
+    deleteReviewFromDom(res);
+  });
 }
 
 const getFormData = () => {
@@ -355,4 +330,15 @@ const getFormData = () => {
 
 const getNameValue = () => document.querySelector('#name-input').value;
 const getCommentsValue = () => document.querySelector('#review-input').value;
+
+const deleteReviewFromDom = (res) => {
+  const reviewList = document.querySelectorAll('#reviews-list li');
+  reviewList.forEach(review => {
+    if (review.id == res.id) {
+      review.remove();
+    }
+  })
+}
+
+
 
