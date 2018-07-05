@@ -281,9 +281,10 @@ if (online) {
 function setRating(index) {
 const radioButtons = document.querySelectorAll('.form-group .rating-label');
   radioButtons.forEach((button, i) => {
-    button.innerText =  i > index ? '☆' : '★';
+    button.innerText =  (i + 1) > index ? '☆' : '★';
   });
   ratingValue = index;
+  onFormValueChange();
 }
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
@@ -294,19 +295,61 @@ function toggleFormView() {
   form.style.display = form.style.display ? 
   form.style.display === 'none' ? 'block' : 'none'
   : 'block'
+  setRating(0);
 }
 
 function submitForm() {
   const formValues = getFormData();
   const id = restarauntInfo.getParameterByName('id');
   const data = Object.assign({}, {restaurant_id: id}, formValues);
-  DBHelper.addReview(data).then((res) =>  {
-    console.log('res', res);
-    const ul = document.getElementById('reviews-list');
-    ul.appendChild(restarauntInfo.createReviewHTML(res));
-    const form = document.querySelector('.add-review form');
-    form.reset();
-  })
+
+ 
+}
+
+function postReview() {
+  const data = Object.assign({}, {restaurant_id: id}, formValues);
+  if ('serviceWorker in navigator' & 'SyncManager' in window) {
+    navigator.serviceWorker.ready
+    .then((sw) => {
+      writeData('reviews', data).then(() => {
+        return sw.sync.register('post-new-review');
+      }).then(() => {
+        const toast = document.querySelector('#toast');
+        toast.innerText = 'Your review saved for syncing';
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+    })
+  } else {
+    DBHelper.addReview(data).then((res) =>  {
+      console.log('res', res);
+      updateUI(res);
+    });
+  }
+  resetForm();
+ 
+}
+
+function resetForm() {
+  const form = document.querySelector('.add-review form');
+  form.reset();
+  setRating(0);
+}
+
+function updateUI(res) {
+  const ul = document.getElementById('reviews-list');
+  ul.appendChild(restarauntInfo.createReviewHTML(res));
+}
+
+function onFormValueChange() {
+  const button = document.querySelector('.submit button');
+  button.disabled = !isFormValid(); 
+}
+
+function isFormValid() {
+  const formValues = getFormData();
+  return !!(formValues.name.trim() && formValues.comments.trim() && formValues.rating);
 }
 
 function resetForm() {

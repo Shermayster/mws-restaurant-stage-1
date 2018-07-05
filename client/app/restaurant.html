@@ -73,31 +73,30 @@
           <label for="name-input">
             Your Name
           </label>
-          <input type="text" id="name-input">
+          <input type="text" id="name-input" onchange="onFormValueChange()">
         </div>
         <div class="form-group">
           <label for="review-input">Your Review</label>
-          <textarea id="review-input">
-
+          <textarea id="review-input" onchange="onFormValueChange()">
           </textarea>
         </div>
         <div class="form-group">
           <p>Your rating</p>
           <div class="rating-group">
             <label class="rating-label" for="rating-input1">☆</label>
-            <input onclick="setRating(0)" name="rating" type="radio" id="rating-input1">
+            <input onclick="setRating(1)" name="rating" type="radio" id="rating-input1">
             <label class="rating-label" for="rating-input2">☆</label>
-            <input onclick="setRating(1)" name="rating" type="radio" id="rating-input2">
+            <input onclick="setRating(2)" name="rating" type="radio" id="rating-input2">
             <label class="rating-label" for="rating-input3">☆</label>
-            <input onclick="setRating(2)" name="rating" type="radio" id="rating-input3">
+            <input onclick="setRating(3)" name="rating" type="radio" id="rating-input3">
             <label class="rating-label" for="rating-input4">☆</label>
-            <input onclick="setRating(3)" name="rating" type="radio" id="rating-input4">
+            <input onclick="setRating(4)" name="rating" type="radio" id="rating-input4">
             <label class="rating-label" for="rating-input5">☆</label>
-            <input onclick="setRating(4)" name="rating" type="radio" id="rating-input5">
+            <input onclick="setRating(5)" name="rating" type="radio" id="rating-input5">
           </div>
         </div>
         <div class='submit'>
-          <button onclick="submitForm()" type="button">Ok</butto>
+          <button disabled class="submit-btn" onclick="submitForm()" type="button">Ok</butto>
           <button type="reset">Cancel</button>
         </div>
       </form>
@@ -108,6 +107,7 @@
       <ul id="reviews-list" class="list"></ul>
     </section>
     <!-- End reviews -->
+    <div id="toast"></div>
   </main>
   <!-- End main -->
 
