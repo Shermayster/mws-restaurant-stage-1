@@ -1,10 +1,17 @@
 'use strict'
 var dbPromise = idb.open('restaurants-store', 1, db => {
   if (!db.objectStoreNames.contains('restaurants')) {
-    db.createObjectStore('restaurants')
+    db.createObjectStore('restaurants');
+  }
+  if (!db.objectStoreNames.contains('reviews')) {
+    db.createObjectStore('reviews');
+  }
+  
+  if (!db.objectStoreNames.contains('restaurants')) {
+    db.createObjectStore('sync-reviews');
   }
   if (!db.objectStoreNames.contains('restaurants')) {
-    db.createObjectStore('reviews')
+    db.createObjectStore('sync-reviews');
   }
 });
 

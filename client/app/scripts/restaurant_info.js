@@ -83,7 +83,7 @@ class RestarauntInfo {
 
   initReviews() {
     const id = this.getParameterByName('id');
-    DBHelper.gerRestaurantReviews(id).then(res => {
+    DBHelper.getRestaurantReviews(id).then(res => {
       this.fillReviewsHTML(res);
     })
   }
@@ -302,16 +302,18 @@ function submitForm() {
   const formValues = getFormData();
   const id = restarauntInfo.getParameterByName('id');
   const data = Object.assign({}, {restaurant_id: id}, formValues);
-
+  postReview(data);
  
 }
 
-function postReview() {
-  const data = Object.assign({}, {restaurant_id: id}, formValues);
+function postReview(formData) {
+  const id = restarauntInfo.getParameterByName('id');
+  const postId = new Date().toISOString();
+  const data = Object.assign({}, {restaurant_id: id}, formData);
   if ('serviceWorker in navigator' & 'SyncManager' in window) {
     navigator.serviceWorker.ready
     .then((sw) => {
-      writeData('reviews', data).then(() => {
+      writeData('reviews', Object.assign({}, {id: postId}, data)).then(() => {
         return sw.sync.register('post-new-review');
       }).then(() => {
         const toast = document.querySelector('#toast');

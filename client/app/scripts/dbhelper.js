@@ -36,10 +36,38 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-    return readData('restaurants').then(res => {
-      return res ? res : DBHelper._fetchRestaurants();
+    return DBHelper._fetchRestaurants().then(res => {
+      networkDataReceived = true;
+      console.log('response dbhelper', res);
+      return res;
     })
+    // if ('indexedDB' in window) {
+    //   if (!networkDataReceived) {
+    //     return readData('restaurants').then(res => {
+    //       console.log('cached', res);
+    //       return res;
+    //     });
+    //   }
+    // }
   }
+
+  /**
+   * Fetch reviews for restaurant
+   */
+
+   static getRestaurantReviews(restaurantId) {
+    return DBHelper._getRestaurantReviews(restaurantId).then(res => {
+      console.log('review response', res);
+      return res;
+    })
+    // if ('indexedDB' in window) {
+    //   if (!networkDataReceived) {
+    //     return readData('reviews').then(res => {
+    //       return res;
+    //     });
+    //   }
+    // }
+   }
 
   /**
    * Add review to a restaurant
@@ -196,7 +224,7 @@ class DBHelper {
   /**
    * get restaurant review
    */
-  static gerRestaurantReviews(restaurantId) {
+  static _getRestaurantReviews(restaurantId) {
     return fetch(DBHelper.DATABASE_URL_GET_REVIEWS+restaurantId)
     .then(res => res.json())
     .catch(error => console.log(error));

@@ -22,10 +22,11 @@ self.addEventListener('install', event => {
         './scripts/restaurant_info.js',
         './styles/styles.css',
         './styles/styles-medium.css',
-        'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css'
+        'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css',
+        'https://unpkg.com/rxjs/bundles/rxjs.umd.min.js'
       ]);
     })
-    .catch(err => console.log('sw install errror: ', err))
+    .catch(err => console.log('sw install error: ', err))
   );
 });
 
@@ -55,7 +56,14 @@ self.addEventListener('fetch', event => {
   }
 
   if (requestUrl.pathname.startsWith('/restaurants')) {
-    serveResturants(event);
+    console.log('service worker fetch');
+    serveRestaurants(event);
+    return;
+  }
+
+  if (requestUrl.pathname.startsWith('/reviews/') &&
+    event.request.method === 'GET') {
+    serveReviews(event);
     return;
   }
   event.respondWith(
@@ -65,14 +73,24 @@ self.addEventListener('fetch', event => {
   );
 });
 
-function serveResturants(event) {
+function serveReviews(event) {
   return event.respondWith(fetch(event.request).then(res => {
     const clonedRes = res.clone();
-    readAllData('restaurants').then(() => {
-      return clonedRes.json();
-    }).then(data => {
-      writeData('restaurants', data, 'restaurants');
-    });
+    clonedRes.json().then(data => {
+      console.log('cloned review', data);
+      writeData('reviews', data[key], 'restaurants');
+    })
+    return res;
+  }));
+}
+
+function serveRestaurants(event) {
+  return event.respondWith(fetch(event.request).then(res => {
+    const clonedRes = res.clone();
+    clonedRes.json().then(data => {
+      data.
+      writeData('restaurants', data, );
+    })
     return res;
   }));
 }
@@ -92,3 +110,29 @@ function serveImages(request) {
     });
   });
 }
+
+self.addEventListener('sync', function(event) {
+  console.log('[Service Worker] Background syncing', event);
+  if (event.tag === 'post-new-review') {
+    console.log('[Service Worker] Syncing new Posts');
+    event.waitUntil(
+      readAllData('sync-reviews')
+        .then(function(data) {
+          for (var dt of data) {
+            const {id, d} = dt;
+            DBHelper.addReview(d)
+              .then(function(res) {
+                console.log('Sent data', res);
+                if (res.ok) {
+                  deleteItemFromData('sync-posts', dt.id); // Isn't working correctly!
+                }
+              })
+              .catch(function(err) {
+                console.log('Error while sending data', err);
+              });
+          }
+
+        })
+    );
+  }
+});
