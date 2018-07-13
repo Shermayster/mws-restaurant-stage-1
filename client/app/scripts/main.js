@@ -222,26 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 
 window.onload = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  });
-  const loadedMap = map;
-  // disable keyboard navigation for google maps
-  google.maps.event.addListener(loadedMap, 'tilesloaded', () => {
-    document.querySelectorAll('#map a').forEach(item => {
-      item.setAttribute('tabindex', '-1');
-    });
-    document.querySelectorAll('#map area').forEach(item => {
-      item.setAttribute('tabindex', '-1');
-    });
-  });
-  main.addMarkersToMap();
+  if (navigator.onLine) {
+    initMap();
+  }
 };
 
 const accBtn = document.querySelector('.accordion');
@@ -276,4 +259,27 @@ function getScreenWidth() {
 
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
+}
+
+function initMap() {
+  let loc = {
+    lat: 40.722216,
+    lng: -73.987501
+  };
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: loc,
+    scrollwheel: false
+  });
+  const loadedMap = map;
+  // disable keyboard navigation for google maps
+  google.maps.event.addListener(loadedMap, 'tilesloaded', () => {
+    document.querySelectorAll('#map a').forEach(item => {
+      item.setAttribute('tabindex', '-1');
+    });
+    document.querySelectorAll('#map area').forEach(item => {
+      item.setAttribute('tabindex', '-1');
+    });
+  });
+  main.addMarkersToMap();
 }

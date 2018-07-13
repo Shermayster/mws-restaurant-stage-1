@@ -1,5 +1,6 @@
 importScripts('./scripts/idb.js');
 importScripts('./scripts/utils.js');
+importScripts('./scripts/dbhelper.js');
 
 var CACHE_VERSION_STATIC = 'static-v19';
 const CACHE_VERSION_PICTURE = 'picture-v3';
@@ -56,7 +57,6 @@ self.addEventListener('fetch', event => {
   }
 
   if (requestUrl.pathname.startsWith('/restaurants')) {
-    console.log('service worker fetch');
     serveRestaurants(event);
     return;
   }
@@ -77,7 +77,6 @@ function serveReviews(event) {
   return event.respondWith(fetch(event.request).then(res => {
     const clonedRes = res.clone();
     clonedRes.json().then(data => {
-      console.log('cloned review', data);
       writeData('reviews', data, data[0].restaurant_id.toString());
     })
     return res;
@@ -117,15 +116,19 @@ self.addEventListener('sync', function(event) {
     event.waitUntil(
       readAllData('sync-reviews')
         .then(function(data) {
+          console.log('sync data', data);
           for (var dt of data) {
-            const {id, d} = dt;
-            DBHelper.addReview(d)
+            const {id, ...item} = dt;
+            console.log('item', item);
+            DBHelper.addReview(item)
               .then(function(res) {
                 console.log('Sent data', res);
                 if (res.ok) {
                   res.json()
                     .then(resData => {
-                      deleteItemFromData('sync-posts', resData.id);
+                      // writeData('reviews',)
+                      console.log('delete sync-post', resData);
+                      deleteItemFromData('sync-reviews', id);
                     })
                 }
               })

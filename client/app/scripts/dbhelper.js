@@ -37,7 +37,9 @@ class DBHelper {
    */
   static fetchRestaurants() {
     return navigator.onLine ?
-      DBHelper._fetchRestaurants().then(res => res) :
+      DBHelper._fetchRestaurants().then(res => res).catch(() => {
+        return readData('restaurants').then(res => res[0]);
+      }) :
       readData('restaurants').then(res => {
         console.log('restaurant from cache', res);
         return res[0]
@@ -50,7 +52,9 @@ class DBHelper {
 
    static getRestaurantReviews(restaurantId) {
      return navigator.onLine ?
-     DBHelper._getRestaurantReviews(restaurantId).then(res => res) :
+     DBHelper._getRestaurantReviews(restaurantId).then(res => res).catch(() => {
+       return  readDataByKey('reviews', restaurantId);
+     }) :
      readDataByKey('reviews', restaurantId).then(res => {
        console.log('reviews from cache', res);
        return res
@@ -65,8 +69,6 @@ class DBHelper {
        method: 'POST',
        body: JSON.stringify(data)
      })
-     .then(res => res.json())
-     .catch(error => console.log(error))
    }
 
    static deleteReview(review_id) {

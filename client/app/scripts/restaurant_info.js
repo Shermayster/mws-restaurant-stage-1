@@ -254,6 +254,7 @@ restarauntInfo.initReviews();
 window.initMap = () => {
   restarauntInfo.fetchRestaurantFromURL()
     .then(restaurant => {
+
       const map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: restaurant.latlng,
@@ -303,17 +304,17 @@ function submitForm() {
   const id = restarauntInfo.getParameterByName('id');
   const data = Object.assign({}, {restaurant_id: id}, formValues);
   postReview(data);
- 
 }
 
 function postReview(formData) {
   const id = restarauntInfo.getParameterByName('id');
   const postId = new Date().toISOString();
   const data = Object.assign({}, {restaurant_id: id}, formData);
-  if ('serviceWorker in navigator' & 'SyncManager' in window) {
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
     navigator.serviceWorker.ready
     .then((sw) => {
-      writeData('reviews', Object.assign({}, {id: postId}, data)).then(() => {
+      writeData('sync-reviews', Object.assign({}, {id: postId}, data), postId).then(() => {
+        console.log('review posted');
         return sw.sync.register('post-new-review');
       }).then(() => {
         const toast = document.querySelector('#toast');
@@ -330,7 +331,6 @@ function postReview(formData) {
     });
   }
   resetForm();
- 
 }
 
 function resetForm() {
@@ -385,5 +385,23 @@ const deleteReviewFromDom = (res) => {
   })
 }
 
+window.addEventListener('online', updateView);
 
+function updateView() {
+  console.log('online');
+  const toast = document.querySelector('#toast');
+  toast.innerText = 'Online';
+  restarauntInfo.fetchRestaurantFromURL()
+  .then(restaurant => {
+    if (navigator.onLine) {
+      const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: restaurant.latlng,
+        scrollwheel: false
+      });
+      DBHelper.mapMarkerForRestaurant(restarauntInfo.restaurant, map);
+    }
+    restarauntInfo.fillBreadcrumb();
+  });
+}
 

@@ -7,10 +7,8 @@ var dbPromise = idb.open('restaurants-store', 1, db => {
     db.createObjectStore('reviews');
   }
   
-  if (!db.objectStoreNames.contains('restaurants')) {
-    db.createObjectStore('sync-reviews');
-  }
-  if (!db.objectStoreNames.contains('restaurants')) {
+  if (!db.objectStoreNames.contains('sync-reviews')) {
+    console.log('create sync review');
     db.createObjectStore('sync-reviews');
   }
 });
@@ -58,9 +56,21 @@ function readAllData(st) {
   return dbPromise.then(db => {
     const tx = db.transaction(st, 'readwrite');
     const store = tx.objectStore(st);
-    store.clear();
-    return tx.complete;
+    return store.getAll();
   })
+}
+
+function deleteItemFromData(st, id) {
+  dbPromise
+    .then(function(db) {
+      var tx = db.transaction(st, 'readwrite');
+      var store = tx.objectStore(st);
+      store.delete(id);
+      return tx.complete;
+    })
+    .then(function() {
+      console.log('Item deleted!');
+    });
 }
 
 class ImageHelper {
