@@ -78,7 +78,7 @@ function serveReviews(event) {
     const clonedRes = res.clone();
     clonedRes.json().then(data => {
       console.log('cloned review', data);
-      writeData('reviews', data[key], 'restaurants');
+      writeData('reviews', data, data[0].restaurant_id.toString());
     })
     return res;
   }));
@@ -88,8 +88,7 @@ function serveRestaurants(event) {
   return event.respondWith(fetch(event.request).then(res => {
     const clonedRes = res.clone();
     clonedRes.json().then(data => {
-      data.
-      writeData('restaurants', data, );
+      writeData('restaurants', data, 'restaurants');
     })
     return res;
   }));
@@ -134,7 +133,6 @@ self.addEventListener('sync', function(event) {
                 console.log('Error while sending data', err);
               });
           }
-
         })
     );
   }

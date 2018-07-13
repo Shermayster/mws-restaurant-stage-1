@@ -36,19 +36,12 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-    return DBHelper._fetchRestaurants().then(res => {
-      networkDataReceived = true;
-      console.log('response dbhelper', res);
-      return res;
-    })
-    // if ('indexedDB' in window) {
-    //   if (!networkDataReceived) {
-    //     return readData('restaurants').then(res => {
-    //       console.log('cached', res);
-    //       return res;
-    //     });
-    //   }
-    // }
+    return navigator.onLine ?
+      DBHelper._fetchRestaurants().then(res => res) :
+      readData('restaurants').then(res => {
+        console.log('restaurant from cache', res);
+        return res[0]
+      });
   }
 
   /**
@@ -56,17 +49,12 @@ class DBHelper {
    */
 
    static getRestaurantReviews(restaurantId) {
-    return DBHelper._getRestaurantReviews(restaurantId).then(res => {
-      console.log('review response', res);
-      return res;
-    })
-    // if ('indexedDB' in window) {
-    //   if (!networkDataReceived) {
-    //     return readData('reviews').then(res => {
-    //       return res;
-    //     });
-    //   }
-    // }
+     return navigator.onLine ?
+     DBHelper._getRestaurantReviews(restaurantId).then(res => res) :
+     readDataByKey('reviews', restaurantId).then(res => {
+       console.log('reviews from cache', res);
+       return res
+      });
    }
 
   /**

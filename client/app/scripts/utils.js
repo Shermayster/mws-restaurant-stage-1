@@ -28,11 +28,19 @@ function writeData(st, data, dataKey) {
   });
 }
 
+function readDataByKey(st, key) {
+  return dbPromise.then(db => {
+    const tx = db.transaction(st, 'readonly');
+    const store = tx.objectStore(st);
+    return store.get(key);
+  })
+}
+
 function readData(st) {
   return dbPromise.then((db) => {
     const tx = db.transaction(st, 'readonly');
     const store = tx.objectStore(st);
-    return store.getAll().then(data => data[0]);
+    return store.getAll().then(data => data);
   })
 }
 
