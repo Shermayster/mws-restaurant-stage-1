@@ -8,8 +8,11 @@ var dbPromise = idb.open('restaurants-store', 1, db => {
   }
   
   if (!db.objectStoreNames.contains('sync-reviews')) {
-    console.log('create sync review');
     db.createObjectStore('sync-reviews');
+  }
+
+  if(!db.objectStore.contains('sync-deleted-reviews')) {
+    db.createObjectStore('sync-deleted-reviews');
   }
 });
 

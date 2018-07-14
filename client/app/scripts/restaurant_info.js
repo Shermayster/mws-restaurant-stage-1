@@ -23,6 +23,7 @@ if ('serviceWorker' in navigator) {
 class RestarauntInfo {
   constructor() {
     this.restaurant = null;
+    this.isTitle = false;
   }
 
   /**
@@ -32,13 +33,18 @@ class RestarauntInfo {
   fetchRestaurantFromURL(callback) {
     if (this.restaurant) {
       // restaurant already fetched!
-      return new Promise(this.restaurant);
+      return new Promise((resolve, reject) => {
+        resolve(this.restaurant);
+      });
     }
     const id = this.getParameterByName('id');
     if (!id) {
       // no id found in URL
       const error = 'No restaurant id in URL';
-      callback(error, null);
+
+      return new Promise((resolve, reject) => {
+        reject(error);
+      });
     } else {
       return DBHelper.fetchRestaurantById(id).then(restaurant => {
         this.restaurant = restaurant;
@@ -78,7 +84,7 @@ class RestarauntInfo {
     if (restaurant.operating_hours) {
       this.fillRestaurantHoursHTML();
     }
-  
+
   }
 
   initReviews() {
@@ -126,25 +132,41 @@ class RestarauntInfo {
    */
   fillReviewsHTML(reviews = []) {
     const container = document.getElementById('reviews-container');
+    this.appendTitle(container);
+    reviews.length ? this.appendReviewsList(reviews) : this.appendNoReviews(container);
+  }
+
+  appendTitle(container) {
+    if (this.isTitle) return;
     const title = document.createElement('h3');
     title.innerHTML = 'Reviews';
     container.appendChild(title);
-    reviews.length ? this.appendReviewsList(container, reviews) : this.appendNoReviews(container);
+    this.isTitle = true;
   }
 
   appendNoReviews(container) {
+    const noReviewsEl = document.querySelector('.no-review-message');
+    if(noReviewsEl) return;
     const noReviews = document.createElement('p');
     noReviews.classList = ['no-review-message'];
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
   }
 
-  appendReviewsList(container, reviews) {
-    const ul = document.getElementById('reviews-list');
+  appendReviewsList(reviews) {
+    const container = document.getElementById('reviews-container');
+    const reviewList = document.getElementById('reviews-list');
+    this.clearPrevReviews(reviewList);
     reviews.forEach(review => {
-      ul.appendChild(this.createReviewHTML(review));
+      reviewList.appendChild(this.createReviewHTML(review));
     });
-    container.appendChild(ul);
+    container.appendChild(reviewList);
+  }
+
+  clearPrevReviews(reviewList) {
+    while (reviewList.firstChild) {
+      reviewList.firstChild.remove();
+    }
   }
 
   /**
@@ -187,8 +209,8 @@ class RestarauntInfo {
     deleteSVG.appendChild(deleteSVGPath);
     deleteSVG.appendChild(deleteSVGPath1);
 
-  
-    
+
+
 
 
 
@@ -254,7 +276,6 @@ restarauntInfo.initReviews();
 window.initMap = () => {
   restarauntInfo.fetchRestaurantFromURL()
     .then(restaurant => {
-
       const map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: restaurant.latlng,
@@ -280,57 +301,94 @@ if (online) {
 
 
 function setRating(index) {
-const radioButtons = document.querySelectorAll('.form-group .rating-label');
+  const radioButtons = document.querySelectorAll('.form-group .rating-label');
   radioButtons.forEach((button, i) => {
-    button.innerText =  (i + 1) > index ? '☆' : '★';
+    button.innerText = (i + 1) > index ? '☆' : '★';
   });
   ratingValue = index;
   onFormValueChange();
 }
+
 function getAccordionText(text) {
   return text === 'SHOW MAP' ? 'HIDE MAP' : 'SHOW MAP';
 }
 
 function toggleFormView() {
   const form = document.querySelector('.add-review form');
-  form.style.display = form.style.display ? 
-  form.style.display === 'none' ? 'block' : 'none'
-  : 'block'
+  form.style.display = form.style.display ?
+    form.style.display === 'none' ? 'block' : 'none' :
+    'block'
   setRating(0);
 }
 
 function submitForm() {
   const formValues = getFormData();
   const id = restarauntInfo.getParameterByName('id');
-  const data = Object.assign({}, {restaurant_id: id}, formValues);
+  const data = Object.assign({}, {
+    restaurant_id: id
+  }, formValues);
   postReview(data);
 }
 
 function postReview(formData) {
   const id = restarauntInfo.getParameterByName('id');
   const postId = new Date().toISOString();
-  const data = Object.assign({}, {restaurant_id: id}, formData);
+  const data = Object.assign({}, {
+    restaurant_id: id
+  }, formData);
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    navigator.serviceWorker.ready
-    .then((sw) => {
-      writeData('sync-reviews', Object.assign({}, {id: postId}, data), postId).then(() => {
-        console.log('review posted');
-        return sw.sync.register('post-new-review');
-      }).then(() => {
-        const toast = document.querySelector('#toast');
-        toast.innerText = 'Your review saved for syncing';
+    readDataByKey('reviews', id).then(res => {
+      const reviews = [...res, data];
+      writeData('reviews', reviews, id).then(() => {
+        console.log('update local reviews', reviews)
+        restarauntInfo.fillReviewsHTML(reviews);
+        navigator.serviceWorker.ready
+          .then((sw) => {
+            writeData('sync-reviews', {...data, id: postId}, postId).then(() => {
+                console.log('review posted');
+                resetForm();
+                return sw.sync.register('post-new-review');
+              }).then(() => {
+                const toast = document.querySelector('#toast');
+                toast.innerText = 'Your review saved for syncing';
+              })
+              .catch(function (err) {
+                console.log(err);
+              });
+          })
       })
-      .catch(function(err) {
-        console.log(err);
-      });
     })
   } else {
-    DBHelper.addReview(data).then((res) =>  {
+    DBHelper.addReview(data).then((res) => {
       console.log('res', res);
       updateUI(res);
+      resetForm();
     });
   }
-  resetForm();
+ 
+}
+
+function deleteReview(review) {
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    const id = restarauntInfo.getParameterByName('id');
+    readDataByKey('reviews', id).then(res => {
+      const reviews = res.filter(item => item.id !== review.id);
+      writeData('reviews', reviews, id).then(() => {
+        console.log('update local reviews after delete', reviews);
+        restarauntInfo.fillReviewsHTML(reviews);
+        navigator.serviceWorker.ready.then(sw => {
+          writeData('sync-deleted-reviews', review, review.id).then(() => {
+            return sw.sync.register('delete-review');
+          })
+        }) 
+      })
+    })
+  } else {
+    DBHelper.deleteReview(review.id)
+      .then(res => {
+        deleteReviewFromDom(res);
+      });
+  }
 }
 
 function resetForm() {
@@ -346,7 +404,7 @@ function updateUI(res) {
 
 function onFormValueChange() {
   const button = document.querySelector('.submit button');
-  button.disabled = !isFormValid(); 
+  button.disabled = !isFormValid();
 }
 
 function isFormValid() {
@@ -358,15 +416,10 @@ function resetForm() {
   toggleFormView();
 }
 
-function deleteReview(review) {
-  DBHelper.deleteReview(review.id)
-  .then(res => {
-    deleteReviewFromDom(res);
-  });
-}
+
 
 const getFormData = () => {
-  return  {
+  return {
     name: getNameValue(),
     rating: ratingValue,
     comments: getCommentsValue()
@@ -392,16 +445,15 @@ function updateView() {
   const toast = document.querySelector('#toast');
   toast.innerText = 'Online';
   restarauntInfo.fetchRestaurantFromURL()
-  .then(restaurant => {
-    if (navigator.onLine) {
-      const map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      DBHelper.mapMarkerForRestaurant(restarauntInfo.restaurant, map);
-    }
-    restarauntInfo.fillBreadcrumb();
-  });
+    .then(restaurant => {
+      if (navigator.onLine) {
+        const map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: restaurant.latlng,
+          scrollwheel: false
+        });
+        DBHelper.mapMarkerForRestaurant(restarauntInfo.restaurant, map);
+      }
+      restarauntInfo.fillBreadcrumb();
+    });
 }
-

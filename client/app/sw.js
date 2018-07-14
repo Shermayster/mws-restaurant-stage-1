@@ -113,30 +113,58 @@ self.addEventListener('sync', function(event) {
   console.log('[Service Worker] Background syncing', event);
   if (event.tag === 'post-new-review') {
     console.log('[Service Worker] Syncing new Posts');
-    event.waitUntil(
-      readAllData('sync-reviews')
-        .then(function(data) {
-          console.log('sync data', data);
-          for (var dt of data) {
-            const {id, ...item} = dt;
-            console.log('item', item);
-            DBHelper.addReview(item)
-              .then(function(res) {
-                console.log('Sent data', res);
-                if (res.ok) {
-                  res.json()
-                    .then(resData => {
-                      // writeData('reviews',)
-                      console.log('delete sync-post', resData);
-                      deleteItemFromData('sync-reviews', id);
-                    })
-                }
-              })
-              .catch(function(err) {
-                console.log('Error while sending data', err);
-              });
-          }
-        })
-    );
+    syncNewPosts(event);
+  }
+  if (event.tag === 'delete-review') {
+    console.log('[Service Worker] Deleting Posts');
+    syncDeletedPosts(event);
   }
 });
+
+function syncDeletedPosts(event) {
+  event.waitUntil(readAllData('sync-deleted-reviews')
+    .then(function (data) {
+      console.log('sync data', data);
+      for (var dt of data) {
+        DBHelper.deleteReview(dt.id)
+          .then(function (res) {
+            console.log('Sent data', res);
+            if (res.ok) {
+              res.json()
+                .then(resData => {
+                  console.log('delete sync-deleted-reviews', resData);
+                  deleteItemFromData('sync-deleted-reviews', dt.id);
+                });
+            }
+          })
+          .catch(function (err) {
+            console.log('Error while sending data', err);
+          });
+      }
+    }));
+}
+
+function syncNewPosts(event) {
+  event.waitUntil(readAllData('sync-reviews')
+    .then(function (data) {
+      console.log('sync data', data);
+      for (var dt of data) {
+        const { id, ...item } = dt;
+        console.log('item', item);
+        DBHelper.addReview(item)
+          .then(function (res) {
+            console.log('Sent data', res);
+            if (res.ok) {
+              res.json()
+                .then(resData => {
+                  console.log('delete sync-post', resData);
+                  deleteItemFromData('sync-reviews', id);
+                });
+            }
+          })
+          .catch(function (err) {
+            console.log('Error while sending data', err);
+          });
+      }
+    }));
+}

@@ -75,7 +75,10 @@ class DBHelper {
      return fetch(DBHelper.DATABASE_URL_DELETE_REVIEW+review_id, {
        method: 'DELETE'
      })
-     .then(res => res.json())
+     .then(res => {
+
+       return res.json()
+      })
      .catch(error => console.log(error));
    }
   /**
