@@ -4,6 +4,7 @@
  * Add service worker to restaraunt info page
  */
 var online = navigator.onLine;
+var localIdCounter = 0;
 
 var ratingValue;
 
@@ -176,7 +177,8 @@ class RestarauntInfo {
    */
   createReviewHTML(review) {
     const li = document.createElement('li');
-    li.setAttribute('id', review.id);
+    const id = review.id ? review.id : review.clientId;
+    li.setAttribute('id', id);
     const reviewTitle = document.createElement('div');
     reviewTitle.className = 'review-title review-details';
     li.appendChild(reviewTitle);
@@ -208,10 +210,6 @@ class RestarauntInfo {
     deleteSVG.appendChild(deleteSVGDesc);
     deleteSVG.appendChild(deleteSVGPath);
     deleteSVG.appendChild(deleteSVGPath1);
-
-
-
-
 
 
     deleteBtn.appendChild(deleteSVG);
@@ -334,7 +332,8 @@ function postReview(formData) {
   const id = restarauntInfo.getParameterByName('id');
   const postId = new Date().toISOString();
   const data = Object.assign({}, {
-    restaurant_id: id
+    restaurant_id: id,
+    clientId: getClientId(),
   }, formData);
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     readDataByKey('reviews', id).then(res => {
@@ -344,7 +343,7 @@ function postReview(formData) {
         restarauntInfo.fillReviewsHTML(reviews);
         navigator.serviceWorker.ready
           .then((sw) => {
-            writeData('sync-reviews', {...data, id: postId}, postId).then(() => {
+            writeData('sync-reviews', Object.assign({}, data, {id: postId}), postId).then(() => {
                 console.log('review posted');
                 resetForm();
                 return sw.sync.register('post-new-review');
@@ -369,25 +368,36 @@ function postReview(formData) {
 }
 
 function deleteReview(review) {
-  if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    const id = restarauntInfo.getParameterByName('id');
+  const id = restarauntInfo.getParameterByName('id');
+  if (!review.id && review.clientId) {
     readDataByKey('reviews', id).then(res => {
-      const reviews = res.filter(item => item.id !== review.id);
+      const reviews = res.filter(item => item.clientId !== review.clientId);
       writeData('reviews', reviews, id).then(() => {
-        console.log('update local reviews after delete', reviews);
-        restarauntInfo.fillReviewsHTML(reviews);
-        navigator.serviceWorker.ready.then(sw => {
-          writeData('sync-deleted-reviews', review, review.id).then(() => {
-            return sw.sync.register('delete-review');
-          })
-        }) 
-      })
+        deleteItemFromData('sync-reviews', review.clientId);
+        deleteReviewFromDom(review);
+      });
     })
   } else {
-    DBHelper.deleteReview(review.id)
-      .then(res => {
-        deleteReviewFromDom(res);
-      });
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+      readDataByKey('reviews', id).then(res => {
+        const reviews = res.filter(item => item.id !== review.id);
+        writeData('reviews', reviews, id).then(() => {
+          console.log('update local reviews after delete', reviews);
+          restarauntInfo.fillReviewsHTML(reviews);
+          navigator.serviceWorker.ready.then(sw => {
+            writeData('sync-deleted-reviews', review, review.id).then(() => {
+              deleteReviewFromDom(review);
+              return sw.sync.register('delete-review');
+            })
+          })
+        })
+      })
+    } else {
+      DBHelper.deleteReview(review.id)
+        .then(res => {
+          deleteReviewFromDom(res);
+        });
+    }
   }
 }
 
@@ -432,13 +442,40 @@ const getCommentsValue = () => document.querySelector('#review-input').value;
 const deleteReviewFromDom = (res) => {
   const reviewList = document.querySelectorAll('#reviews-list li');
   reviewList.forEach(review => {
-    if (review.id == res.id) {
+    if (review.id == res.id || review.id === res.clientId) {
       review.remove();
     }
   })
 }
 
-window.addEventListener('online', updateView);
+function getClientId() {
+  const result = `clientId${localIdCounter}`;
+  localIdCounter++;
+  return result;
+}
+
+window.addEventListener('online', onOnline);
+window.addEventListener('offline', onOffline);
+
+function onOnline() {
+  const toaster = document.querySelector('#toast');
+  toaster.classList = ['show'];
+  updateView();
+  toaster.innerText = 'You are online';
+  setTimeout(() => {
+    toaster.classList = [];
+  }, 5000)
+}
+
+function onOffline() {
+  const toaster = document.querySelector('#toast');
+  toaster.classList = ['show'];
+  toaster.innerText = 'You are offline';
+  setTimeout(() => {
+    toaster.classList = [];
+  }, 5000)
+}
+
 
 function updateView() {
   console.log('online');

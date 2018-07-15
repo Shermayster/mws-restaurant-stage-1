@@ -76,7 +76,6 @@ class DBHelper {
        method: 'DELETE'
      })
      .then(res => {
-
        return res.json()
       })
      .catch(error => console.log(error));

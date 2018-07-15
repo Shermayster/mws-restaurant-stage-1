@@ -11,7 +11,7 @@ var dbPromise = idb.open('restaurants-store', 1, db => {
     db.createObjectStore('sync-reviews');
   }
 
-  if(!db.objectStore.contains('sync-deleted-reviews')) {
+  if(!db.objectStoreNames.contains('sync-deleted-reviews')) {
     db.createObjectStore('sync-deleted-reviews');
   }
 });

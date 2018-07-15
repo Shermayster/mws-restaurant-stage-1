@@ -129,12 +129,9 @@ function syncDeletedPosts(event) {
         DBHelper.deleteReview(dt.id)
           .then(function (res) {
             console.log('Sent data', res);
-            if (res.ok) {
-              res.json()
-                .then(resData => {
-                  console.log('delete sync-deleted-reviews', resData);
-                  deleteItemFromData('sync-deleted-reviews', dt.id);
-                });
+            if (res) {
+              console.log('delete sync-deleted-reviews', res);
+              deleteItemFromData('sync-deleted-reviews', res.id);
             }
           })
           .catch(function (err) {
