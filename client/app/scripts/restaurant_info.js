@@ -494,3 +494,9 @@ function updateView() {
       restarauntInfo.fillBreadcrumb();
     });
 }
+
+function onFavoriteClickHandler(event) {
+  const id = restarauntInfo.getParameterByName('id');
+  DBHelper.manageFavorite(id, event.target.checked)
+  .then((res) =>  console.log('favorites', res))
+}

@@ -32,6 +32,10 @@ class DBHelper {
     return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/`
   }
 
+  static GET_DATABASE_URL_MANAGE_FAVORITE(id, isFavorite) {
+    return `http://localhost:${DBHelper.DATABASE_PORT}/restaurants/${id}/?is_favorite=${isFavorite}`
+  }
+
   /**
    * Fetch all restaurants.
    */
@@ -79,6 +83,15 @@ class DBHelper {
        return res.json()
       })
      .catch(error => console.log(error));
+   }
+
+   static manageFavorite(restaurant_id, isFavorite) {
+      return fetch(DBHelper.GET_DATABASE_URL_MANAGE_FAVORITE(restaurant_id, isFavorite), 
+      { method: 'PUT' })
+      .then(res => {
+        return res.json();
+      })
+      .catch(error => console.log(error));
    }
   /**
    *
