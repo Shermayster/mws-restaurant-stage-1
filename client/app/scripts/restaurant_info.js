@@ -86,6 +86,8 @@ class RestarauntInfo {
       this.fillRestaurantHoursHTML();
     }
 
+    const favoriteCheckbox = document.querySelector('#favoriteInput');
+    favoriteCheckbox.checked = restaurant.is_favorite;
   }
 
   initReviews() {
@@ -336,27 +338,7 @@ function postReview(formData) {
     clientId: getClientId(),
   }, formData);
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    readDataByKey('reviews', id).then(res => {
-      const reviews = [...res, data];
-      writeData('reviews', reviews, id).then(() => {
-        console.log('update local reviews', reviews)
-        restarauntInfo.fillReviewsHTML(reviews);
-        navigator.serviceWorker.ready
-          .then((sw) => {
-            writeData('sync-reviews', Object.assign({}, data, {id: postId}), postId).then(() => {
-                console.log('review posted');
-                resetForm();
-                return sw.sync.register('post-new-review');
-              }).then(() => {
-                const toast = document.querySelector('#toast');
-                toast.innerText = 'Your review saved for syncing';
-              })
-              .catch(function (err) {
-                console.log(err);
-              });
-          })
-      })
-    })
+    addReviewToSyncSW();
   } else {
     DBHelper.addReview(data).then((res) => {
       console.log('res', res);
@@ -365,6 +347,31 @@ function postReview(formData) {
     });
   }
  
+
+  function addReviewToSyncSW() {
+    readDataByKey('reviews', id).then(res => {
+      const reviews = [...res, data];
+      writeData('reviews', reviews, id).then(() => {
+        console.log('update local reviews', reviews);
+        restarauntInfo.fillReviewsHTML(reviews);
+        navigator.serviceWorker.ready
+          .then((sw) => {
+            writeData('sync-reviews', Object.assign({}, data, { id: postId }), postId).then(() => {
+              console.log('review posted');
+              resetForm();
+              return sw.sync.register('post-new-review');
+            }).then(() => {
+              const toast = document.querySelector('#toast');
+              toaster.classList = ['show'];
+              toast.innerText = 'Your review was saved';
+            })
+              .catch(function (err) {
+                console.log(err);
+              });
+          });
+      });
+    });
+  }
 }
 
 function deleteReview(review) {
@@ -464,7 +471,7 @@ function onOnline() {
   toaster.innerText = 'You are online';
   setTimeout(() => {
     toaster.classList = [];
-  }, 5000)
+  }, 2000)
 }
 
 function onOffline() {
@@ -473,7 +480,7 @@ function onOffline() {
   toaster.innerText = 'You are offline';
   setTimeout(() => {
     toaster.classList = [];
-  }, 5000)
+  }, 2000)
 }
 
 
@@ -497,6 +504,28 @@ function updateView() {
 
 function onFavoriteClickHandler(event) {
   const id = restarauntInfo.getParameterByName('id');
-  DBHelper.manageFavorite(id, event.target.checked)
-  .then((res) =>  console.log('favorites', res))
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    readData('restaurants').then(res => {
+      const updatedRestaurants = res.map(item =>  {
+        if (item.id === id) {
+          item.is_favorite = event.target.checked;
+        }
+        return item;
+      });
+      clearAllData('restaurants').then(() => {
+        writeData('restaurants', updatedRestaurants, 'restaurants').then(() => {
+          navigator.serviceWorker.ready.then(sw => {
+            let data = {};
+            data[id] = event.target.checked;
+            writeData('sync-is-favorite', data, id).then(() => {
+              return sw.sync.register('is-favorite');
+            })
+          })
+        })
+      });
+    })
+  } else {
+    DBHelper.manageFavorite(id, event.target.checked)
+    .then((res) =>  console.log('favorites', res))
+  }
 }

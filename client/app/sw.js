@@ -119,6 +119,29 @@ self.addEventListener('sync', function(event) {
     console.log('[Service Worker] Deleting Posts');
     syncDeletedPosts(event);
   }
+
+  if (event.tag === 'is-favorite') {
+    console.log('[Service Worker] change favorites restaurant');
+    event.waitUntil(readAllData('sync-is-favorite')
+    .then(function (data) {
+      console.log('sync data', data);
+      for (var dt of data) {
+        const id = Object.keys(dt)[0];
+        const isFavorite = dt[id];
+        DBHelper.manageFavorite(id, isFavorite)
+          .then(function (res) {
+            console.log('Sent data', res);
+            if (res) {
+              console.log('Favorite is updated', res);
+              deleteItemFromData('sync-is-favorite', res.id.toString());
+            }
+          })
+          .catch(function (err) {
+            console.log('Error while sending data', err);
+          });
+      }
+    }));
+  }
 });
 
 function syncDeletedPosts(event) {
