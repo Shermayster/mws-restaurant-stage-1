@@ -529,3 +529,18 @@ function onFavoriteClickHandler(event) {
     .then((res) =>  console.log('favorites', res))
   }
 }
+
+function onRatingKeyup(event, rating) {
+  if(event.code === 'Space' || event.code === 32) {
+    event.preventDefault();
+    setRating(rating);
+  }
+}
+
+window.addEventListener('keydown', function(event){
+  if (event.keyCode === 13 || event.keyCode === 'Enter') {
+    event.preventDefault();
+    return false;
+  }
+});
+

@@ -21,7 +21,7 @@
           "Sunday": "12:00 pm - 4:00 pm, 5:30 pm - 11:00 pm"
         },
         "createdAt": 1504095563444,
-        "updatedAt": "2018-07-21T10:07:22.207Z",
+        "updatedAt": "2018-07-21T10:45:11.656Z",
         "id": 1,
         "is_favorite": "false"
       },
@@ -526,6 +526,16 @@
         "createdAt": "2018-07-14T12:23:10.036Z",
         "updatedAt": "2018-07-14T12:23:10.036Z",
         "id": 84
+      },
+      {
+        "restaurant_id": "1",
+        "clientId": "clientId0",
+        "name": "asdfaf",
+        "rating": 1,
+        "comments": "sadfdsf          ",
+        "createdAt": "2018-07-21T11:32:07.965Z",
+        "updatedAt": "2018-07-21T11:32:07.965Z",
+        "id": 88
       }
     ]
   },
@@ -581,7 +591,7 @@
       "id": 10
     },
     "reviews": {
-      "id": 87
+      "id": 88
     }
   }
 }

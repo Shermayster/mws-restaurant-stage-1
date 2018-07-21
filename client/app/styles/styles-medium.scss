@@ -50,7 +50,18 @@
   .add-review {
     @extend .add-favorite;
     grid-row-start: 3;
-
+    button {
+        max-width: 30rem;
+    }
+    form {
+      max-width: 30rem;
+      .submit {
+        display: flex;
+      }
+      button {
+        width: 13rem;
+      }
+    }
   }
   #restaurant-img .restaurant-img {
     width: 100%;
