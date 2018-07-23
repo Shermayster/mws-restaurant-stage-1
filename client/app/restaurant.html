@@ -93,21 +93,21 @@
         <div class="form-group">
           <p>Your rating</p>
           <div class="rating-group">
-            <label onkeydown="onRatingKeyup(event, 1)" tabindex="0" class="rating-label" for="rating-input1">
+            <label onkeydown="onRatingKeyup(event, 1)" onclick="setRating(1)" tabindex="0" class="rating-label" for="rating-input1">
               ☆
-              <input onkeydown="onRatingKeyup(event, 1)" onclick="setRating(1)" name="rating" type="radio" id="rating-input1">
+              <input onkeydown="onRatingKeyup(event, 1)" name="rating" type="radio" id="rating-input1">
             </label>
-            <label onkeydown="onRatingKeyup(event, 2)" tabindex="0" class="rating-label" for="rating-input1">
+            <label onkeydown="onRatingKeyup(event, 2)" onclick="setRating(2)" tabindex="0" class="rating-label" for="rating-input1">
                 ☆
-                <input onkeydown="onRatingKeyup(event, 2)" onclick="setRating(2)" name="rating" type="radio" id="rating-input2">
+                <input onkeydown="onRatingKeyup(event, 2)" name="rating" type="radio" id="rating-input2">
             </label>
-            <label onkeydown="onRatingKeyup(event, 3)" tabindex="0" class="rating-label" for="rating-input3">☆
-              <input onkeydown="onRatingKeyup(event, 3)" onclick="setRating(3)" name="rating" type="radio" id="rating-input3">
+            <label onkeydown="onRatingKeyup(event, 3)" onclick="setRating(3)" tabindex="0" class="rating-label" for="rating-input3">☆
+              <input onkeydown="onRatingKeyup(event, 3)"  name="rating" type="radio" id="rating-input3">
             </label>
-            <label onkeydown="onRatingKeyup(event, 4)" tabindex="0" class="rating-label" for="rating-input4">☆
+            <label onkeydown="onRatingKeyup(event, 4)" onclick="setRating(4)" tabindex="0" class="rating-label" for="rating-input4">☆
               <input onkeydown="onRatingKeyup(event, 4)" onclick="setRating(4)" name="rating" type="radio" id="rating-input4">
             </label>
-            <label onkeydown="onRatingKeyup(event, 5)" tabindex="0" class="rating-label" for="rating-input5">☆
+            <label onkeydown="onRatingKeyup(event, 5)" onclick="setRating(5)" tabindex="0" class="rating-label" for="rating-input5">☆
               <input onkeydown="onRatingKeyup(event, 5)" onclick="setRating(5)" name="rating" type="radio" id="rating-input5">
             </label>
           </div>

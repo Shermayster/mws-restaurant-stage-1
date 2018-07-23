@@ -87,12 +87,13 @@ class RestarauntInfo {
     }
 
     const favoriteCheckbox = document.querySelector('#favoriteInput');
-    favoriteCheckbox.checked = restaurant.is_favorite;
+    favoriteCheckbox.checked = restaurant.is_favorite === 'true';
   }
 
   initReviews() {
     const id = this.getParameterByName('id');
-    DBHelper.getRestaurantReviews(id).then(res => {
+    DBHelper.getRestaurantReviews(id)
+    .then(res => {
       this.fillReviewsHTML(res);
     })
   }

@@ -75,22 +75,30 @@ self.addEventListener('fetch', event => {
 
 function serveReviews(event) {
   return event.respondWith(fetch(event.request).then(res => {
-    const clonedRes = res.clone();
-    clonedRes.json().then(data => {
-      writeData('reviews', data, data[0].restaurant_id.toString());
-    })
+    if(res) {
+      const clonedRes = res.clone();
+      clonedRes.json().then(data => {
+        writeData('reviews', data, data[0].restaurant_id.toString());
+      })
+    }
     return res;
   }));
 }
 
 function serveRestaurants(event) {
-  return event.respondWith(fetch(event.request).then(res => {
-    const clonedRes = res.clone();
-    clonedRes.json().then(data => {
-      writeData('restaurants', data, 'restaurants');
-    })
+  return event.respondWith(fetch(event.request)
+  .then(res => {
+    console.log('service worker serveRestaurants', res)
+    if(res) {
+      const clonedRes = res.clone();
+      clonedRes.json().then(data => {
+        writeData('restaurants', data, 'restaurants');
+      })
+    }
     return res;
-  }));
+  })
+
+);
 }
 
 

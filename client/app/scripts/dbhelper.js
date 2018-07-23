@@ -41,8 +41,14 @@ class DBHelper {
    */
   static fetchRestaurants() {
     return navigator.onLine ?
-      DBHelper._fetchRestaurants().then(res => res).catch(() => {
-        return readData('restaurants').then(res => res[0]);
+      DBHelper._fetchRestaurants()
+      .then(res =>  {
+        console.log('response', res)
+        return res;
+      })
+      .catch((error) => {
+        console.log('restaurant from cache', error);
+        return readData('restaurants').then(res => res[0])
       }) :
       readData('restaurants').then(res => {
         console.log('restaurant from cache', res);
@@ -56,7 +62,9 @@ class DBHelper {
 
    static getRestaurantReviews(restaurantId) {
      return navigator.onLine ?
-     DBHelper._getRestaurantReviews(restaurantId).then(res => res).catch(() => {
+     DBHelper._getRestaurantReviews(restaurantId)
+     .then(res => res)
+     .catch(() => {
        return  readDataByKey('reviews', restaurantId);
      }) :
      readDataByKey('reviews', restaurantId).then(res => {
@@ -86,7 +94,7 @@ class DBHelper {
    }
 
    static manageFavorite(restaurant_id, isFavorite) {
-      return fetch(DBHelper.GET_DATABASE_URL_MANAGE_FAVORITE(restaurant_id, isFavorite), 
+      return fetch(DBHelper.GET_DATABASE_URL_MANAGE_FAVORITE(restaurant_id, isFavorite),
       { method: 'PUT' })
       .then(res => {
         return res.json();
@@ -232,7 +240,6 @@ class DBHelper {
   static _getRestaurantReviews(restaurantId) {
     return fetch(DBHelper.DATABASE_URL_GET_REVIEWS+restaurantId)
     .then(res => res.json())
-    .catch(error => console.log(error));
   }
   /**
    * Fetch restaurant data
@@ -240,6 +247,5 @@ class DBHelper {
   static _fetchRestaurants() {
     return fetch(DBHelper.DATABASE_URL_GET)
     .then(res => res.json())
-    .catch(error => console.log(error));
   }
 }
