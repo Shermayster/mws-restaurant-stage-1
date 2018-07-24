@@ -8,32 +8,37 @@ class DBHelper {
   static get DATABASE_PORT() {
     return 1337;
   }
+
+  static get BASIC_URL() {
+    // return 'http://localhost:1337'
+    return 'https://udacity-restaurant-review.herokuapp.com';
+  }
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL_GET() {
     // Change this to your server port
-    return `http://localhost:${DBHelper.DATABASE_PORT}/restaurants`;
+    return `${DBHelper.BASIC_URL}/restaurants`;
   }
 
   static get DATABASE_URL_ADD() {
-    return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/`
+    return `${DBHelper.BASIC_URL}/reviews/`
   }
   /**
    * Get all reviews for a restaurant
    * http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
    */
   static get DATABASE_URL_GET_REVIEWS() {
-    return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/?restaurant_id=`
+    return `${DBHelper.BASIC_URL}/reviews/?restaurant_id=`
   }
 
   static get DATABASE_URL_DELETE_REVIEW() {
-    return `http://localhost:${DBHelper.DATABASE_PORT}/reviews/`
+    return `${DBHelper.BASIC_URL}/reviews/`
   }
 
   static GET_DATABASE_URL_MANAGE_FAVORITE(id, isFavorite) {
-    return `http://localhost:${DBHelper.DATABASE_PORT}/restaurants/${id}/?is_favorite=${isFavorite}`
+    return `${DBHelper.BASIC_URL}/restaurants/${id}/?is_favorite=${isFavorite}`
   }
 
   /**
