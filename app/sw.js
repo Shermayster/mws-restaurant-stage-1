@@ -2,7 +2,7 @@ importScripts('./scripts/idb.js');
 importScripts('./scripts/utils.js');
 importScripts('./scripts/dbhelper.js');
 
-var CACHE_VERSION_STATIC = 'static-v19';
+var CACHE_VERSION_STATIC = 'static-v20';
 const CACHE_VERSION_PICTURE = 'picture-v3';
 
 self.addEventListener('install', event => {
