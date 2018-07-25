@@ -49,8 +49,6 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', event => {
   var requestUrl = new URL(event.request.url);
-  console.log('event', event);
-
   if (requestUrl.pathname.startsWith('/images/')) {
     event.respondWith(serveImages(event.request));
     return;
@@ -66,8 +64,14 @@ self.addEventListener('fetch', event => {
     serveReviews(event);
     return;
   }
+
+
+  if (requestUrl.pathname.startsWith('restaurant.html?id=1')) {
+    serveRestaurantsHtml(event);
+    return;
+  }
   event.respondWith(
-    caches.match(event.request).then(function (response) {
+    caches.match(event.request, {ignoreSearch: true}).then(function(response) {
       return response || fetch(event.request);
     })
   );
@@ -86,6 +90,7 @@ function serveReviews(event) {
 }
 
 function serveRestaurants(event) {
+  console.log('serve restaurants');
   return event.respondWith(fetch(event.request)
   .then(res => {
     console.log('service worker serveRestaurants', res)
@@ -99,6 +104,16 @@ function serveRestaurants(event) {
   })
 
 );
+}
+
+function serveRestaurantsHtml(event) {
+  var storageUrl = 'restaurant.html';
+  return caches.open(CACHE_VERSION_STATIC).then(function (cache) {
+    return cache.match(storageUrl).then(function (response) {
+      //serve form cache
+      return response || event.response;
+    });
+  });
 }
 
 
