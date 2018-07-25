@@ -24,6 +24,7 @@ self.addEventListener('install', event => {
         './styles/styles.css',
         './styles/styles-medium.css',
         'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css',
+        'https://unpkg.com/rxjs/bundles/rxjs.umd.min.js'
       ]);
     })
     .catch(err => console.log('sw install error: ', err))
@@ -49,6 +50,7 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', event => {
   var requestUrl = new URL(event.request.url);
+
   if (requestUrl.pathname.startsWith('/images/')) {
     event.respondWith(serveImages(event.request));
     return;
@@ -64,14 +66,8 @@ self.addEventListener('fetch', event => {
     serveReviews(event);
     return;
   }
-
-
-  if (requestUrl.pathname.startsWith('restaurant.html?id=1')) {
-    serveRestaurantsHtml(event);
-    return;
-  }
   event.respondWith(
-    caches.match(event.request, {ignoreSearch: true}).then(function(response) {
+    caches.match(event.request, {ignoreSearch: true}).then(function (response) {
       return response || fetch(event.request);
     })
   );
@@ -90,7 +86,6 @@ function serveReviews(event) {
 }
 
 function serveRestaurants(event) {
-  console.log('serve restaurants');
   return event.respondWith(fetch(event.request)
   .then(res => {
     console.log('service worker serveRestaurants', res)
@@ -104,16 +99,6 @@ function serveRestaurants(event) {
   })
 
 );
-}
-
-function serveRestaurantsHtml(event) {
-  var storageUrl = 'restaurant.html';
-  return caches.open(CACHE_VERSION_STATIC).then(function (cache) {
-    return cache.match(storageUrl).then(function (response) {
-      //serve form cache
-      return response || event.response;
-    });
-  });
 }
 
 
@@ -145,69 +130,14 @@ self.addEventListener('sync', function(event) {
 
   if (event.tag === 'is-favorite') {
     console.log('[Service Worker] change favorites restaurant');
-    event.waitUntil(readAllData('sync-is-favorite')
-    .then(function (data) {
-      console.log('sync data', data);
-      for (var dt of data) {
-        const id = Object.keys(dt)[0];
-        const isFavorite = dt[id];
-        DBHelper.manageFavorite(id, isFavorite)
-          .then(function (res) {
-            console.log('Sent data', res);
-            if (res) {
-              console.log('Favorite is updated', res);
-              deleteItemFromData('sync-is-favorite', res.id.toString());
-            }
-          })
-          .catch(function (err) {
-            console.log('Error while sending data', err);
-          });
-      }
-    }));
+    event.waitUntil(syncIsFavorite());
   }
 });
 
 function syncDeletedPosts(event) {
-  event.waitUntil(readAllData('sync-deleted-reviews')
-    .then(function (data) {
-      console.log('sync data', data);
-      for (var dt of data) {
-        DBHelper.deleteReview(dt.id)
-          .then(function (res) {
-            console.log('Sent data', res);
-            if (res) {
-              console.log('delete sync-deleted-reviews', res);
-              deleteItemFromData('sync-deleted-reviews', res.id);
-            }
-          })
-          .catch(function (err) {
-            console.log('Error while sending data', err);
-          });
-      }
-    }));
+  event.waitUntil(syncDeleteReviews());
 }
 
 function syncNewPosts(event) {
-  event.waitUntil(readAllData('sync-reviews')
-    .then(function (data) {
-      console.log('sync data', data);
-      for (var dt of data) {
-        const { id, ...item } = dt;
-        console.log('item', item);
-        DBHelper.addReview(item)
-          .then(function (res) {
-            console.log('Sent data', res);
-            if (res.ok) {
-              res.json()
-                .then(resData => {
-                  console.log('delete sync-post', resData);
-                  deleteItemFromData('sync-reviews', id);
-                });
-            }
-          })
-          .catch(function (err) {
-            console.log('Error while sending data', err);
-          });
-      }
-    }));
+  event.waitUntil(syncSubmittedPosts);
 }
