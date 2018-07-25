@@ -24,7 +24,6 @@ self.addEventListener('install', event => {
         './styles/styles.css',
         './styles/styles-medium.css',
         'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css',
-        'https://unpkg.com/rxjs/bundles/rxjs.umd.min.js'
       ]);
     })
     .catch(err => console.log('sw install error: ', err))
