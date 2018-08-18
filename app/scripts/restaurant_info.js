@@ -102,6 +102,7 @@ class RestarauntInfo {
     const picture = document.createElement('picture');
     picture.setAttribute('id', 'restaurant-img');
     const images = DBHelper.imageUrlForRestaurant(restaurant);
+    console.log('​RestarauntInfo -> appendRestaurantImage -> images', images);
     const altValue = `Restaurant: ${restaurant.name}`;
     const sources = ImageHelper.creatSourcesForPicture(images, altValue);
     sources.forEach(source => picture.append(source));
@@ -324,20 +325,21 @@ function toggleFormView() {
 
 function submitForm() {
   const formValues = getFormData();
+  console.log()
   const id = restarauntInfo.getParameterByName('id');
-  const data = Object.assign({}, {
-    restaurant_id: id
-  }, formValues);
-  postReview(data);
+  formValues.append('id', id)
+  postReview(formValues);
 }
 
 function postReview(formData) {
   const id = restarauntInfo.getParameterByName('id');
   const postId = new Date().toISOString();
-  const data = Object.assign({}, {
-    restaurant_id: id,
-    clientId: getClientId(),
-  }, formData);
+  // const data = Object.assign({}, {
+  //   restaurant_id: id,
+  //   clientId: getClientId(),
+  // }, formData);
+  formData.append('restaurant_id', id);
+  formData.append('clientId'. getClientId());
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     addReviewToSyncSW();
   } else {
@@ -427,7 +429,7 @@ function onFormValueChange() {
 
 function isFormValid() {
   const formValues = getFormData();
-  return !!(formValues.name.trim() && formValues.comments.trim() && formValues.rating);
+  return !!(formValues.get('name').trim() && formValues.get('comments').trim() && formValues.get('rating'));
 }
 
 function resetForm() {
@@ -437,11 +439,19 @@ function resetForm() {
 
 
 const getFormData = () => {
-  return {
-    name: getNameValue(),
-    rating: ratingValue,
-    comments: getCommentsValue()
-  }
+  let formData = new FormData(document.querySelector('form'));
+  formData.forEach((value, key) => {
+    console.log(key + ' ' + value);
+  })
+  // debugger;
+  console.log('form data', formData);
+
+  return formData;
+  // return {
+  //   name: getNameValue(),
+  //   rating: ratingValue,
+  //   comments: getCommentsValue()
+  // }
 }
 
 const getNameValue = () => document.querySelector('#name-input').value;
@@ -555,4 +565,3 @@ window.addEventListener('keydown', function(event){
     return false;
   }
 });
-

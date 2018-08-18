@@ -126,7 +126,18 @@ gulp.task('images', () => {
           suffix: '-380px',
           extname: '.webp',
         }
-      }]
+      },
+      {
+        rename: {
+          suffix: '-380px',
+        }
+      },
+      {
+        rename: {
+          suffix: '',
+        }
+      }
+    ]
     })))
     .pipe(gulp.dest('dist/images'))
     .pipe(gulp.dest('.tmp/images'))

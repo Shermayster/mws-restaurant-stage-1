@@ -213,8 +213,12 @@ class DBHelper {
         url: `/images/${restaurant.photograph}-280px.webp`,
         type: 'webp'
       },
-      'webp': {
+      '380jpg': {
         url: `/images/${restaurant.photograph}-380px.jpg`,
+        type: 'jpg'
+      },
+      '380webp': {
+        url: `/images/${restaurant.photograph}-380px.webp`,
         type: 'webp'
       },
       'jpg': {

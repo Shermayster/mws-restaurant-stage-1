@@ -9,7 +9,7 @@
   <title>Restaurant Info</title>
 
   <!-- Normalize.css for better cross-browser consistency -->
-  <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
+  <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css"/>
   <!-- Place favicon.ico in the root directory -->
 
   <!-- build:css styles/vendor.css -->
@@ -18,8 +18,96 @@
   <!-- endbuild -->
 
   <!-- build:css styles/main.css -->
+  <style>
+    @charset "utf-8";
+
+body,
+td,
+th,
+p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+body {
+  background-color: #eeeeee;
+  margin: 0;
+  position: relative;
+}
+
+ul,
+li {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  color: #333;
+}
+
+a {
+  color: orange;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: #3397db;
+  text-decoration: none;
+}
+
+a img {
+  border: none 0px #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0 0 20px;
+}
+
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.maincontent {
+  background-color: #f3f3f3;
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+#footer {
+  background-color: #444;
+  color: #f7f7f7;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  padding: 25px 0;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100vw;
+}
+  </style>
   <link rel="stylesheet" href="styles/styles.css">
-  <link rel="stylesheet" href="styles/styles-medium.css">
+  <link rel="stylesheet" href="styles/styles-medium.css" media="(min-width: 700px)">
   <!-- endbuild -->
   <!-- Manifest file -->
   <link rel="manifest" href="./manifest.webmanifest">
@@ -148,7 +236,5 @@
   <!-- Google Maps -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTTZOCiF4Et51Q4h481ThDlGZc4J_NMBc&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
-
 </body>
-
 </html>
